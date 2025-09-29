@@ -1,12 +1,6 @@
 from db import *;
 from state import *;
-print("Hello World")
 
-db: Database = Database()
-db.connect()
-res = db.query("SELECT * FROM airport LIMIT 10;")
-
-state: GameState = GameState
 
 
 
@@ -29,6 +23,16 @@ def welcome_screen():
         starting_port_meta = db.query(f"SELECT airport.name, country.name FROM airport JOIN country ON airport.iso_country = country.iso_country WHERE ident = '{state.starting_ICAO}';")
 
         print(f"Congratulations, your business has been granted an operating license at the {starting_port_meta[0][0]}, {starting_port_meta[0][1]}.")
+
+
+
+
+db: Database = Database()
+db.connect()
+res = db.query("SELECT * FROM airport LIMIT 10;")
+
+state: GameState = GameState
+
 
 welcome_screen()
     
