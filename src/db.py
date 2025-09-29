@@ -32,4 +32,5 @@ class Database:
         cur = self.conn.cursor()
         cur.execute(sql)
         res = cur.fetchall()
+        self.conn.commit()
         return res
