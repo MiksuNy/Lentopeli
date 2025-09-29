@@ -5,3 +5,5 @@ class GameState:
         self.starting_ICAO = None
         self.money = None
         self.co2_budget = None
+        self.quota = None
+        self.balance = None
