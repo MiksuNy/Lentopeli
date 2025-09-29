@@ -8,3 +8,5 @@ CREATE TABLE owns_airport (
     FOREIGN KEY (airport_ident) REFERENCES airport(ident),
     FOREIGN KEY (game_id) REFERENCES game(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE airport ADD cost INT;
