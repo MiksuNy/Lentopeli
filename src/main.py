@@ -1,4 +1,5 @@
 from db import *;
+from event import *;
 from state import *;
 from airport import *;
 
@@ -31,12 +32,34 @@ db: Database = Database()
 db.connect()
 
 state: GameState = GameState
-
+airport_manager: AirportManager = AirportManager()
+event_manager: EventManager = EventManager()
 
 welcome_screen()
-airport_manager: AirportManager = AirportManager()
-state.owned_airports = airport_manager.get_owned(state.id)
-print("\nYou currently own the following airports:")
-for i in range(len(state.owned_airports)):
-    print(f"{state.owned_airports[i].country}: {state.owned_airports[i].name} [{state.owned_airports[i].ident}]")
-    
+
+should_quit = False
+while should_quit == False:
+    input_string = input("Give a command: ")
+
+    match input_string:
+        case "help":
+            print("Possible commands\n\thelp\n\tinfo\n\tquit\n\tnext")
+            continue
+        case "info":
+            state.owned_airports = airport_manager.get_owned(state.id)
+            print("\nYou currently own the following airports:")
+            for i in range(len(state.owned_airports)):
+                print(f"{state.owned_airports[i].country}: {state.owned_airports[i].name} [{state.owned_airports[i].ident}]")
+            continue
+
+    event_manager.queue_event_from_string(input_string)
+
+    while len(event_manager.event_queue) > 0:
+        match event_manager.pop_queue():
+            case Event.QUIT_GAME:
+                print("Quitting game...")
+                should_quit = True
+                break
+            case Event.NEXT_TURN:
+                print("Next turn...")
+                break
