@@ -1,3 +1,4 @@
+from airplane import AirplaneManager
 from db import *;
 from event import *;
 from state import *;
@@ -32,8 +33,11 @@ db: Database = Database()
 db.connect()
 
 state: GameState = GameState
-airport_manager: AirportManager = AirportManager()
 event_manager: EventManager = EventManager()
+airport_manager: AirportManager = AirportManager()
+airplane_manager: AirplaneManager = AirplaneManager()
+
+airplane_manager.spawn(10)
 
 welcome_screen()
 
@@ -62,4 +66,7 @@ while should_quit == False:
                 break
             case Event.NEXT_TURN:
                 print("Next turn...")
+                airplane_manager.move_all()
+                for plane in airplane_manager.all_planes:
+                    print(plane.location, plane.airplane_type)
                 break
