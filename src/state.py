@@ -10,7 +10,6 @@ class GameState:
         self.quota = None
         self.balance = None
         self.owned_airports = []
-        self.turns = 0
 
 class Wallet(GameState):
     def __init__(self):
