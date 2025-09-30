@@ -1,15 +1,19 @@
 from db import *;
 
 class GameState:
-    def __init__(self):
-        self.id = None
+    def __init__(self, id):
+        self.id = id
         self.name = None
         self.starting_ICAO = None
-        self.money = None
         self.co2_budget = None
         self.quota = None
         self.balance = None
         self.owned_airports = []
+
+        self.db: Database = Database()
+        self.db.connect()
+
+        self.name, self.co2_consumed, self.co2_budget, self.quota, self.balance = self.db.query(f"SELECT screen_name, co2_consumed, co2_budget, quota, balance FROM game WHERE id = '{id}';")[0]
 
 class Wallet(GameState):
     def __init__(self):
