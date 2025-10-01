@@ -19,7 +19,7 @@ class AirportManager:
 
         if self.db.query(f"SELECT ident FROM airport WHERE ident = '{ident}';"):
             item: Airport = Airport(ident)
-            balance = GameState(game_id).balance
+            balance = GameState(game_id).wallet.balance
             if item.cost <= balance:
                 self.db.query(f"INSERT INTO owns_airport (game_id, airport_ident) VALUES ({game_id}, '{ident}');")
                 print(f"Congratulations, you now own {self.db.query(f"SELECT name FROM airport WHERE ident = '{ident}';")[0][0]}.")
