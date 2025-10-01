@@ -66,4 +66,5 @@ class Command(Enum):
         
 
     def quit(self):
-        return "Executing: Quit"
+        print("Bye!")
+        quit()

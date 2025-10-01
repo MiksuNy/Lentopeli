@@ -7,18 +7,21 @@ class GameState:
         self.starting_ICAO = None
         self.co2_budget = None
         self.quota = None
-        self.balance = None
+        self.wallet = None
         self.owned_airports = []
 
         self.db: Database = Database()
         self.db.connect()
 
-        self.name, self.co2_consumed, self.co2_budget, self.quota, self.balance = self.db.query(f"SELECT screen_name, co2_consumed, co2_budget, quota, balance FROM game WHERE id = '{id}';")[0]
+        self.name, self.co2_consumed, self.co2_budget, self.quota = self.db.query(f"SELECT screen_name, co2_consumed, co2_budget, quota FROM game WHERE id = '{id}';")[0]
+        self.wallet = Wallet(self.id)
 
 class Wallet(GameState):
-    def __init__(self):
-        self.db: Database = Database
+    def __init__(self, game_id):
+        self.db: Database = Database()
         self.db.connect()
+
+        self.balance = self.db.query(f"SELECT balance FROM game WHERE id = '{game_id}';")
 
 
     def subtract(self, amount):
@@ -32,5 +35,4 @@ class Wallet(GameState):
     def get_balance(self):
         return self.db.query(f"SELECT balance FROM game WHERE id = '{super.id}';")[0][0]
 
-        
         
