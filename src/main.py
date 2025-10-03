@@ -1,3 +1,4 @@
+from airplane import AirplaneManager
 from db import *;
 from event import *;
 from state import *;
@@ -32,8 +33,10 @@ def welcome_screen() -> GameState:
 db: Database = Database()
 db.connect()
 
-airport_manager: AirportManager = AirportManager()
 event_manager: EventManager = EventManager()
+airplane_manager: AirplaneManager = AirplaneManager()
+
+airplane_manager.spawn(10)
 
 state = welcome_screen()
 
