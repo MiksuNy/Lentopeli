@@ -34,7 +34,6 @@ db: Database = Database()
 db.connect()
 
 event_manager: EventManager = EventManager()
-airport_manager: AirportManager = AirportManager()
 airplane_manager: AirplaneManager = AirplaneManager()
 
 airplane_manager.spawn(10)
