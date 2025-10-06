@@ -53,7 +53,7 @@ class Command(Enum):
         print(f"\nYou currently own the following airports:")
         game_state.owned_airports = AirportManager().get_owned(game_state.id)
         for i in range(len(game_state.owned_airports)):
-                print(f"{game_state.owned_airports[i].country}: {game_state.owned_airports[i].name} [{game_state.owned_airports[i].ident}]")
+                print(f"{game_state.owned_airports[i].country}: {game_state.owned_airports[i].name} [{game_state.owned_airports[i].ident}] @ €{game_state.owned_airports[i].cost}")
 
     def next(self):
         return "Executing: Next"

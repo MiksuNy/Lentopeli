@@ -47,4 +47,14 @@ class Airport(AirportManager):
         random.seed(bytes(seed) + bytes(self.ident, "utf-8"))
         self.cost = 10000 + random.randint(5000, 15000)
 
-        self.cost =  0#TODO: implement an algorithm that deterministically calculates a price for airports based on a seed unique to each GameState
+        price_ranges = {
+            'small_airport': (10000, 50000),  # Price range in currency units
+            'medium_airport': (50000, 130000),
+            'large_airport': (130000, 250000)
+        }
+
+        if self.type in price_ranges:
+            min_price, max_price = price_ranges[self.type]
+
+        random_price = random.randint(min_price, max_price)
+        self.cost = random_price
