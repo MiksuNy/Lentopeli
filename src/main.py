@@ -3,7 +3,8 @@ from db import *;
 from event import *;
 from state import *;
 from airport import *;
-from command import Command
+from command import Command;
+import random
 
 
 
@@ -22,7 +23,9 @@ def welcome_screen() -> GameState:
         id = int(db.query("SELECT id FROM game ORDER BY id DESC LIMIT 1;")[0][0]) + 1
         starting_ICAO = db.query("SELECT ident FROM airport WHERE type = 'small_airport' ORDER BY RAND() LIMIT 1;")[0][0]
 
-        db.query(f"INSERT INTO game (id, co2_consumed, co2_budget, location, screen_name, balance) VALUES ({id}, 0, 10000, '{starting_ICAO}', '{login_name}', 100000);")
+        game_seed = random.getrandbits(64)
+
+        db.query(f"INSERT INTO game (id, co2_consumed, co2_budget, location, screen_name, balance, seed) VALUES ({id}, 0, 10000, '{starting_ICAO}', '{login_name}', 100000, {game_seed});")
         db.query(f"INSERT INTO owns_airport (airport_ident, game_id) VALUES('{starting_ICAO}', '{id}');")
         starting_port_meta = db.query(f"SELECT airport.name, country.name FROM airport JOIN country ON airport.iso_country = country.iso_country WHERE ident = '{starting_ICAO}';")
 

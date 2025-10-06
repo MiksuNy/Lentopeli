@@ -9,4 +9,4 @@ CREATE TABLE owns_airport (
     FOREIGN KEY (game_id) REFERENCES game(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
-ALTER TABLE airport ADD cost INT;
+ALTER TABLE game ADD seed BINARY(64);
