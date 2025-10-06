@@ -9,11 +9,12 @@ class GameState:
         self.quota = None
         self.wallet = None
         self.owned_airports = []
+        self.seed = None
 
         self.db: Database = Database()
         self.db.connect()
 
-        self.name, self.co2_consumed, self.co2_budget, self.quota = self.db.query(f"SELECT screen_name, co2_consumed, co2_budget, quota FROM game WHERE id = '{id}';")[0]
+        self.name, self.co2_consumed, self.co2_budget, self.quota, self.seed = self.db.query(f"SELECT screen_name, co2_consumed, co2_budget, quota, seed FROM game WHERE id = '{id}';")[0]
         self.wallet = Wallet(self.id)
 
 class Wallet(GameState):
@@ -21,18 +22,20 @@ class Wallet(GameState):
         self.db: Database = Database()
         self.db.connect()
 
-        self.balance = self.db.query(f"SELECT balance FROM game WHERE id = '{game_id}';")
+        self.id = game_id
+
+        self.balance = self.db.query(f"SELECT balance FROM game WHERE id = '{self.id}';")
 
 
     def subtract(self, amount):
         super.money -= amount
-        self.db.query(f"UPDATE game SET balance = balance - {amount} WHERE id = '{super.id}';")
+        self.db.query(f"UPDATE game SET balance = balance - {amount} WHERE id = '{self.id}';")
     
     def add(self, amount):
         super.money += amount
-        self.db.query(f"UPDATE game SET balance = balance + {amount} WHERE id = '{super.id}';")
+        self.db.query(f"UPDATE game SET balance = balance + {amount} WHERE id = '{self.id}';")
     
     def get_balance(self):
-        return self.db.query(f"SELECT balance FROM game WHERE id = '{super.id}';")[0][0]
+        return self.db.query(f"SELECT balance FROM game WHERE id = '{self.id}';")[0][0]
 
         

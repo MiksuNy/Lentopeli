@@ -48,7 +48,7 @@ class Command(Enum):
     def info(self, game_state: GameState):
         print("Info:")
         print(f"Name: {game_state.name}")
-        print(f"Money: {game_state.balance}")
+        print(f"Money: {game_state.wallet.get_balance()}")
         print(f"Quota: {game_state.quota}")
         print(f"\nYou currently own the following airports:")
         game_state.owned_airports = AirportManager().get_owned(game_state.id)

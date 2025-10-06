@@ -7,11 +7,11 @@ class AirportManager:
         self.db: Database = Database()
         self.db.connect()
     
-    def get_owned(self, game_id):
+    def get_owned(self, game_id, seed=0):
         owned = []
         res = self.db.query(f"SELECT airport_ident FROM owns_airport WHERE game_id = '{game_id}';")
         for i in range(len(res)):
-            airport: Airport = Airport(res[i][0])
+            airport: Airport = Airport(res[i][0], seed)
             owned.append(airport)
         return owned
 
@@ -27,10 +27,14 @@ class AirportManager:
                 print("Sorry, you cannot afford this right now.")
         else:
             print("Sorry, not such airport exists...")
+    
+
 
 class Airport(AirportManager):
-    def __init__(self, ident):
+    def __init__(self, ident, seed):
         super().__init__()
+        import random
+
         self.name = None
         self.ident = None
         self.iso_country = None
@@ -38,6 +42,9 @@ class Airport(AirportManager):
         self.cost = None
         self.type = None
 
-        self.name, self.ident, self.iso_country, self.country, self.cost, self.type = self.db.query(f"SELECT airport.name, airport.ident, airport.iso_country, country.name, airport.cost, airport.type FROM airport JOIN country ON airport.iso_country = country.iso_country WHERE ident = '{ident}';")[0]
+        self.name, self.ident, self.iso_country, self.country, self.type = self.db.query(f"SELECT airport.name, airport.ident, airport.iso_country, country.name, airport.type FROM airport JOIN country ON airport.iso_country = country.iso_country WHERE ident = '{ident}';")[0]
 
-        self.cost = 10000 #TODO: implement an algorithm that deterministically calculates a price for airports based on a seed unique to each GameState
+        random.seed(bytes(seed) + bytes(self.ident, "utf-8"))
+        self.cost = 10000 + random.randint(5000, 15000)
+
+        self.cost =  0#TODO: implement an algorithm that deterministically calculates a price for airports based on a seed unique to each GameState
