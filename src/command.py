@@ -1,6 +1,5 @@
 from enum import Enum
-from state import GameState
-from airport import AirportManager
+from state import *
 
 class Command(Enum):
     BUY_AIRPLANE = "buy airplane"
@@ -16,7 +15,7 @@ class Command(Enum):
     def run(self, game_state): #Passataan game_state eteenpäin niille komennoille, jotka sitä tarvii
         match self:
             case Command.BUY_AIRPLANE:
-                return self.buy_airplane()
+                return self.buy_airplane(game_state)
             case Command.BUY_AIRPORT:
                 return self.buy_airport(game_state)
             case Command.MAINTAIN_AIRPLANE:
@@ -26,18 +25,17 @@ class Command(Enum):
             case Command.INFO:
                 return self.info(game_state)
             case Command.NEXT:
-                return self.next()
+                return self.next(game_state)
             case Command.HELP:
                 return self.help()
             case Command.QUIT:
                 return self.quit()
 
-    def buy_airplane(self):
-        return "Executing: Buy Airplane"
+    def buy_airplane(self, game_state):
+        game_state.airplane_manager.buy(input("Enter airplane type (passenger, cargo): "), game_state)
 
     def buy_airport(self, game_state):
-        manager = AirportManager()
-        manager.buy(input("Enter airport ICAO code: "), game_state.id)
+        game_state.airport_manager.buy(input("Enter airport ICAO code: "), game_state)
 
     def maintain_airplane(self):
         return "Executing: Maintain Airplane"
@@ -51,12 +49,16 @@ class Command(Enum):
         print(f"Money: {game_state.wallet.get_balance()}")
         print(f"Quota: {game_state.quota}")
         print(f"\nYou currently own the following airports:")
-        game_state.owned_airports = AirportManager().get_owned(game_state.id)
-        for i in range(len(game_state.owned_airports)):
-                print(f"{game_state.owned_airports[i].country}: {game_state.owned_airports[i].name} [{game_state.owned_airports[i].ident}] @ €{game_state.owned_airports[i].cost}")
+        owned_airports = game_state.airport_manager.get_owned(game_state)
+        for i in range(len(owned_airports)):
+                print(f"{owned_airports[i].country}: {owned_airports[i].name} [{owned_airports[i].ident}] @ €{owned_airports[i].cost}")
+        print(f"\nYou currently own the following airplanes:")
+        owned_airplanes = game_state.airplane_manager.get_owned()
+        for i in range(len(owned_airplanes)):
+                print(f"{owned_airplanes[i].airplane_type}")
 
-    def next(self):
-        return "Executing: Next"
+    def next(self, game_state):
+        game_state.airplane_manager.move_all()
 
     def help(self):
         print(f"Possible commands: \n")

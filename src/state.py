@@ -1,4 +1,7 @@
 from db import *;
+from airport import AirportManager
+from airplane import AirplaneManager
+from event import *
 
 class GameState:
     def __init__(self, id):
@@ -8,8 +11,12 @@ class GameState:
         self.co2_budget = None
         self.quota = None
         self.wallet = None
-        self.owned_airports = []
         self.seed = None
+
+        self.event_manager = EventManager()
+        self.airport_manager = AirportManager()
+        self.airplane_manager = AirplaneManager()
+        self.airplane_manager.spawn(100)
 
         self.db: Database = Database()
         self.db.connect()

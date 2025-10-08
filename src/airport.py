@@ -1,5 +1,5 @@
 from db import *;
-from state import GameState;
+from state import *;
 
 class AirportManager:
     def __init__(self):
@@ -7,21 +7,21 @@ class AirportManager:
         self.db: Database = Database()
         self.db.connect()
     
-    def get_owned(self, game_id, seed=0):
+    def get_owned(self, game_state, seed=0):
         owned = []
-        res = self.db.query(f"SELECT airport_ident FROM owns_airport WHERE game_id = '{game_id}';")
+        res = self.db.query(f"SELECT airport_ident FROM owns_airport WHERE game_id = '{game_state.id}';")
         for i in range(len(res)):
             airport: Airport = Airport(res[i][0], seed)
             owned.append(airport)
         return owned
 
-    def buy(self, ident, game_id):
+    def buy(self, ident, game_state):
 
         if self.db.query(f"SELECT ident FROM airport WHERE ident = '{ident}';"):
             item: Airport = Airport(ident)
-            balance = GameState(game_id).wallet.balance
+            balance = game_state.wallet.balance
             if item.cost <= balance:
-                self.db.query(f"INSERT INTO owns_airport (game_id, airport_ident) VALUES ({game_id}, '{ident}');")
+                self.db.query(f"INSERT INTO owns_airport (game_id, airport_ident) VALUES ({game_state.id}, '{ident}');")
                 print(f"Congratulations, you now own {self.db.query(f"SELECT name FROM airport WHERE ident = '{ident}';")[0][0]}.")
             else:
                 print("Sorry, you cannot afford this right now.")

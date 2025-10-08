@@ -1,4 +1,3 @@
-from airplane import AirplaneManager
 from db import *;
 from event import *;
 from state import *;
@@ -6,7 +5,8 @@ from airport import *;
 from command import Command;
 import random
 
-
+db: Database = Database()
+db.connect()
 
 def welcome_screen() -> GameState:
     login_name = input("Username: ")
@@ -31,18 +31,8 @@ def welcome_screen() -> GameState:
 
         print(f"Congratulations, your business has been granted an operating license at the {starting_port_meta[0][0]}, {starting_port_meta[0][1]}.")
         return GameState(id)
-    
-
-db: Database = Database()
-db.connect()
-
-event_manager: EventManager = EventManager()
-airplane_manager: AirplaneManager = AirplaneManager()
-
-airplane_manager.spawn(10)
 
 state = welcome_screen()
-
 
 # EVENT LOOP:
 should_quit = False
@@ -50,3 +40,4 @@ while should_quit == False:
     input_string = input("Give a command: ")
     command = Command(input_string)
     command.run(state)
+    state.event_manager.roll()
