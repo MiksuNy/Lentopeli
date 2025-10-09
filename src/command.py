@@ -59,6 +59,7 @@ class Command(Enum):
 
     def next(self, game_state):
         game_state.airplane_manager.move_all()
+        game_state.event_manager.roll()
 
     def help(self):
         print(f"Possible commands: \n")

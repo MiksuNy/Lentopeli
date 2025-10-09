@@ -40,4 +40,3 @@ while should_quit == False:
     input_string = input("Give a command: ")
     command = Command(input_string)
     command.run(state)
-    state.event_manager.roll()
