@@ -1,0 +1,35 @@
+:root {
+    --bg-color: #8A2D3B;
+}
+
+body {
+    background: var(--bg-color)
+}
+
+.buttons {
+    width: 150px;
+    margin: auto;
+}
+.buttons .btn {
+    border: 3px #8A2D3B;
+    border-radius: 15px;
+    margin-top: 5px;
+    color: #FBDB93;
+    background-color: #BE5B50;
+    transition-duration: 0.4s;
+    cursor: pointer;
+
+
+}
+
+.btn:hover {
+    color: #641B2E;
+    background-color: #FBDB93;
+    box-shadow: 3px 3px;
+}
+
+#mainMenu {
+    position: relative;
+    top: 200px;
+
+}
