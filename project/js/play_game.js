@@ -1,7 +1,16 @@
 "use-strict";
+const mainMenu = document.getElementById("mainMenu")
+const loginPage = document.getElementById("loginScreen")
 
-async function mainMenu() {
-    const mainMenu = document.getElementById("mainMenu")
+
+function showView(view){
+    document.querySelectorAll(".view").forEach(v => {
+        v.classList.remove("active")
+    })
+    view.classList.add(".active")
+}
+
+async function showMainMenu() {
     const playGameBtn = document.createElement("button")
     const quitGameBtn = document.createElement("button")
     const buttons = document.getElementsByClassName("buttons")
@@ -23,7 +32,20 @@ async function mainMenu() {
 
     buttons[0].append(playGameBtn, quitGameBtn)
 
+    quitGameBtn.addEventListener("click", () => window.close())
+    playGameBtn.addEventListener("click", () => showView(loginPage))
 
 }
 
-mainMenu()
+async function showLoginPage(){
+
+
+
+
+}
+
+function main(){
+    showMainMenu()
+}
+
+main()
