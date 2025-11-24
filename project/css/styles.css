@@ -42,6 +42,8 @@ body {
     letter-spacing: 1px;
     width: 130px;
     height: 40px;
+    text-shadow: 1px 1px black;
+
 }
 
 .btn:hover {
@@ -60,8 +62,8 @@ body {
     position: absolute;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-    transform: translateY(15px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: translateY(20px);
     pointer-events: none;
 
 }
