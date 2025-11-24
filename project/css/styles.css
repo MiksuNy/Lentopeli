@@ -55,7 +55,6 @@ body {
 .view {
     opacity: 0;
     display: none;
-    transform: translateX(20px);
     transition: opacity 0.3s ease, transform 0.3s ease;
     pointer-events: none;
 
@@ -63,6 +62,13 @@ body {
 .view.active {
     display: block;
     opacity: 1;
-    transform: translateX(0);
     pointer-events: auto;
+}
+.loginPageH1 {
+    margin-top: 0px;
+    font-family: 'Orbitron', sans-serif;
+    color: #FBDB93;
+    text-shadow: 3px 4px black;
+
+
 }

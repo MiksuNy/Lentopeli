@@ -7,7 +7,7 @@ function showView(view){
     document.querySelectorAll(".view").forEach(v => {
         v.classList.remove("active")
     })
-    view.classList.add(".active")
+    view.classList.add("active")
 }
 
 async function showMainMenu() {
@@ -38,7 +38,12 @@ async function showMainMenu() {
 }
 
 async function showLoginPage(){
-
+    const header = document.createElement("header")
+    const h1 = document.createElement("h1")
+    h1.className = "loginPageH1"
+    h1.textContent = "Login"
+    header.appendChild(h1)
+    loginPage.insertBefore("div", header)
 
 
 
@@ -46,6 +51,7 @@ async function showLoginPage(){
 
 function main(){
     showMainMenu()
+    showLoginPage()
 }
 
 main()
