@@ -1,51 +1,69 @@
 "use-strict";
 const mainMenu = document.getElementById("mainMenu")
 const loginPage = document.getElementById("loginScreen")
+const buttons = document.getElementsByClassName("buttons")
 
 
-function showView(view){
+function setView(view){
     document.querySelectorAll(".view").forEach(v => {
         v.classList.remove("active")
     })
     view.classList.add("active")
 }
 
+function startViewWithTransition (view){
+    document.startViewTransition(() => {
+        setView(view)
+    })
+}
+
 async function showMainMenu() {
     const playGameBtn = document.createElement("button")
     const quitGameBtn = document.createElement("button")
-    const buttons = document.getElementsByClassName("buttons")
 
     playGameBtn.className = "btn";
     playGameBtn.type = "button";
     playGameBtn.value = "play";
     playGameBtn.textContent = "Play Game";
-    playGameBtn.style.width = "130px";
-    playGameBtn.style.height = "40px";
-
 
     quitGameBtn.className = "btn";
     quitGameBtn.type = "button";
     quitGameBtn.value = "quit";
     quitGameBtn.textContent = "Quit Game"
-    quitGameBtn.style.width = "130px";
-    quitGameBtn.style.height = "40px";
 
     buttons[0].append(playGameBtn, quitGameBtn)
-
-    quitGameBtn.addEventListener("click", () => window.close())
-    playGameBtn.addEventListener("click", () => showView(loginPage))
+    quitGameBtn.addEventListener("click", () => window.close());
+    playGameBtn.addEventListener("click", () => startViewWithTransition(loginPage));
 
 }
 
 async function showLoginPage(){
-    const header = document.createElement("header")
-    const h1 = document.createElement("h1")
-    h1.className = "loginPageH1"
-    h1.textContent = "Login"
-    header.appendChild(h1)
-    loginPage.insertBefore("div", header)
+    const header = document.createElement("header");
+    const h1 = document.createElement("h1");
+    const input = document.createElement("input");
+    const buttonsClass = document.querySelectorAll(".buttons")
+    const loginBtn = document.createElement("button")
+    const backBtn = document.createElement("button")
+    h1.className = "loginPageH1";
+    h1.textContent = "Login";
 
+    input.type = "text";
+    input.placeholder = "Type your username";
+    input.name = "username";
+    input.autocomplete = 'on';
+    input.id = "unameInput"
 
+    loginBtn.textContent = "LOGIN";
+    loginBtn.type = "submit";
+    loginBtn.className = "btn";
+    backBtn.textContent = "BACK";
+    backBtn.className = "btn";
+
+    header.appendChild(h1);
+    loginPage.insertAdjacentElement("afterbegin", header);
+    loginPage.insertBefore(input, buttonsClass[1])
+    buttons[1].append(loginBtn, backBtn)
+    backBtn.addEventListener("click", () => startViewWithTransition(mainMenu))
 
 }
 
