@@ -5,14 +5,31 @@ import random
 db: Database = Database()
 db.connect()
 
-def welcome_screen() -> GameState:
-    login_name = input("Username: ")
+
+def welcome_screen(login_name: str):
+    game_state_dict = {}
+    #login_name = input("Username: ")
     is_returning_user = db.query(f"SELECT screen_name, id FROM game WHERE screen_name = '{login_name}';")
 
     if is_returning_user:
         state = GameState(is_returning_user[0][1])
         print(f"Welcome back, {state.name}!")
-        return state
+
+        game_state_dict = {
+            "newUser": False,
+            "gameState": {
+                "name": state.name,
+                "id": state.id,
+                "co2Consumed": state.co2_consumed,
+                "co2Budget": state.co2_budget,
+                "locationIcao": state.starting_ICAO,
+                "quota": state.quota,
+                "balance": state.wallet.balance if state.wallet.balance else 0,
+                "seed": state.seed
+            }
+        }
+        return game_state_dict
+
     else:
         print(f"Welcome, {login_name}!")
         print("Starting new game...")
@@ -27,10 +44,36 @@ def welcome_screen() -> GameState:
         starting_port_meta = db.query(f"SELECT airport.name, country.name FROM airport JOIN country ON airport.iso_country = country.iso_country WHERE ident = '{starting_ICAO}';")
 
         print(f"Congratulations, your business has been granted an operating license at the {starting_port_meta[0][0]}, {starting_port_meta[0][1]}.")
-        return GameState(id)
+        game_state_dict = {
+            "newUser": True,
+            "gameState": {
+                "name": login_name,
+                "id": id,
+                "co2Consumed": 0,
+                "co2Budget": 10000,
+                "startingIcao": starting_ICAO,
+                "startingPortMeta": {
+                    "airportName": starting_port_meta[0][0],
+                    "countryName": starting_port_meta[0][1]
+                },
+                "quota": "",
+                "balance": 100000,
+                "seed": game_seed,
+                "messages": [
+                    {
+                        "type": "info",
+                        "text": f"Congratulations, your business has been granted an operating license at the {starting_port_meta[0][0]}, {starting_port_meta[0][1]}."
+                    }
+
+                ]
+            }
+        }
+
+        GameState(id)
+        return game_state_dict
+
 
 if __name__ == "__main__":
-
     state = welcome_screen()
 
     # EVENT LOOP:
