@@ -2,6 +2,12 @@
 const mainMenuElmnt = document.getElementById("mainMenu")
 const loginPageElmnt = document.getElementById("loginScreen")
 const buttons = document.getElementsByClassName("buttons")
+const loginBtn = document.createElement("button")
+const backBtn = document.createElement("button")
+const input = document.createElement("input");
+const form = document.getElementById("loginForm")
+
+
 
 // Funktio piilottaa muut divit ja asettaa parametrina annetun näkyväksi
 function setView(view){
@@ -18,7 +24,7 @@ function startViewWithTransition (view){
     })
 }
 
-// Main menu div sisältö ja kuuntelija quit game ja play game buttoneille
+// Main menu div sisältö ja kuuntelijat quit game, play game buttoneille
 async function MainMenu() {
     const playGameBtn = document.createElement("button")
     const quitGameBtn = document.createElement("button")
@@ -37,14 +43,11 @@ async function MainMenu() {
     playGameBtn.addEventListener("click", () => startViewWithTransition(loginPageElmnt));
 }
 
-// Login page div sisältö ja kuuntelija back buttonille
-async function LoginPage(){
+// Login page div sisältö ja kuuntelijat login sekä back buttonille
+async function LoginPage() {
     const header = document.createElement("header");
     const h1 = document.createElement("h1");
-    const input = document.createElement("input");
     const buttonsClass = document.querySelectorAll(".buttons")
-    const loginBtn = document.createElement("button")
-    const backBtn = document.createElement("button")
 
     h1.className = "loginPageH1";
     h1.textContent = "Login";
@@ -52,19 +55,41 @@ async function LoginPage(){
     input.placeholder = "Type your username";
     input.name = "username";
     input.id = "unameInput"
-    loginBtn.textContent = "LOGIN";
+    input.required = true;
+
+    loginBtn.textContent = "Login";
     loginBtn.type = "submit";
     loginBtn.className = "btn";
-    backBtn.textContent = "BACK";
+    backBtn.textContent = "Back";
     backBtn.className = "btn";
 
     header.appendChild(h1);
     loginPageElmnt.insertAdjacentElement("afterbegin", header);
-    loginPageElmnt.insertBefore(input, buttonsClass[1])
-    buttons[1].append(loginBtn, backBtn)
+    form.append(input, loginBtn)
+    loginPageElmnt.appendChild(buttonsClass[1])
+    buttons[1].appendChild(backBtn)
     backBtn.addEventListener("click", () => startViewWithTransition(mainMenuElmnt))
+    loginBtn.addEventListener("click", () => handleLogin(input.value))
+
+    form.addEventListener("invalid", function() {
+        this.setCustomValidity("Täytä tämä kenttä.");
+    });
+}
+async function handleLogin(username) {
+    if (!username){
+        console.log("moi")
+    }
+    else {
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Logging in.."
+        username = username.trim()
+        console.log(username)
+    }
 }
 
+async function login () {
+
+}
 function main(){
     MainMenu()
     LoginPage()
