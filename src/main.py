@@ -1,8 +1,5 @@
-from db import *;
-from event import *;
-from state import *;
-from airport import *;
-from command import Command;
+from airport import *
+from command import Command
 import random
 
 db: Database = Database()
@@ -32,11 +29,13 @@ def welcome_screen() -> GameState:
         print(f"Congratulations, your business has been granted an operating license at the {starting_port_meta[0][0]}, {starting_port_meta[0][1]}.")
         return GameState(id)
 
-state = welcome_screen()
+if __name__ == "__main__":
 
-# EVENT LOOP:
-should_quit = False
-while should_quit == False:
-    input_string = input("Give a command: ")
-    command = Command(input_string)
-    command.run(state)
+    state = welcome_screen()
+
+    # EVENT LOOP:
+    should_quit = False
+    while should_quit == False:
+        input_string = input("Give a command: ")
+        command = Command(input_string)
+        command.run(state)
