@@ -1,10 +1,10 @@
-from db import *;
-from airport import AirportManager
 from airplane import AirplaneManager
 from event import *
 
+
 class GameState:
     def __init__(self, id):
+        from src.airport import AirportManager
         self.id = id
         self.name = None
         self.starting_ICAO = None
@@ -45,4 +45,3 @@ class Wallet(GameState):
     def get_balance(self):
         return self.db.query(f"SELECT balance FROM game WHERE id = '{self.id}';")[0][0]
 
-        
