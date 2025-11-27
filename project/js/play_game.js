@@ -55,7 +55,7 @@ async function LoginPage() {
     input.placeholder = "Type your username";
     input.name = "username";
     input.id = "unameInput"
-    input.required = true;
+    //input.required = true;
 
     loginBtn.textContent = "Login";
     loginBtn.type = "submit";
@@ -68,27 +68,56 @@ async function LoginPage() {
     form.append(input, loginBtn)
     loginPageElmnt.appendChild(buttonsClass[1])
     buttons[1].appendChild(backBtn)
-    backBtn.addEventListener("click", () => startViewWithTransition(mainMenuElmnt))
-    loginBtn.addEventListener("click", () => handleLogin(input.value))
 
-    form.addEventListener("invalid", function() {
-        this.setCustomValidity("Täytä tämä kenttä.");
+    backBtn.addEventListener("click", () => startViewWithTransition(mainMenuElmnt))
+    form.addEventListener("submit",  function(evt) {
+        const isBadWords = containsBadWords(input.value);
+
+        // Jos käyttäjänimi tyhjä, huomautetaan siitä käyttäjälle
+        if(input.value === ""){
+            input.setCustomValidity("Tarkista käyttäjänimi!")
+        }
+        // Jos käyttäjä syöttää kirosanan, huomautetaan myös siitä
+        else if (isBadWords) {
+            input.setCustomValidity("Ei kirosanoja!")
+        }
+        // Jos checkValidity on false, näytetään käyttäjälle jompi kumpi ylläolevista viesteistä
+        if (!input.checkValidity()){
+            evt.preventDefault()
+            form.reportValidity()
+        }
+        // Jos ei annettu kiellettyjä sanoja tai tyhjää, suoritetaan handleLogin
+        else {
+            evt.preventDefault()
+            login(input.value);
+        }
     });
 }
-async function handleLogin(username) {
-    if (!username){
-        console.log("moi")
-    }
-    else {
-        loginBtn.disabled = true;
-        loginBtn.textContent = "Logging in.."
-        username = username.trim()
-        console.log(username)
-    }
+// Palauttaa true jos käyttäjänimi sisältää kiellettyjä sanoja, muuten false
+function containsBadWords(username) {
+    const kirosanat = ["vittu", "perkele", "saatana", "paska", "helvetti"]
+    return (kirosanat.some(kirosana => username.trim().toLowerCase().includes(kirosana)))
 }
 
-async function login () {
+// Muutetaan loginBtn text contentiksi "Logging in.." ja otetaan pois käytöstä kirjautumisen ajaksi
+function handleLogin() {
+    loginBtn.textContent = "Logging in.."
+    loginBtn.disabled = true;
+}
 
+// Haetaan endpointilta gameState eli suoritetaan varsinainen 'login' ja kommunikointi backendin kanssa
+async function login (username) {
+    handleLogin()
+    username = username.trim();
+    const endpointUrl = "http://127.0.0.1:5000/login/"
+    const response = await fetch(endpointUrl+username, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+    const gameState = await response.json()
+    console.log(gameState)
 }
 function main(){
     MainMenu()
