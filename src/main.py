@@ -7,7 +7,6 @@ db.connect()
 
 
 def welcome_screen(login_name: str):
-    game_state_dict = {}
     #login_name = input("Username: ")
     is_returning_user = db.query(f"SELECT screen_name, id FROM game WHERE screen_name = '{login_name}';")
 
@@ -25,7 +24,7 @@ def welcome_screen(login_name: str):
                 "locationIcao": state.starting_ICAO,
                 "quota": state.quota,
                 "balance": state.wallet.balance if state.wallet.balance else 0,
-                "seed": state.seed
+                "ownsAirport": state.airplane_manager.get_owned() if True else None
             }
         }
         return game_state_dict
@@ -58,7 +57,6 @@ def welcome_screen(login_name: str):
                 },
                 "quota": "",
                 "balance": 100000,
-                "seed": game_seed,
                 "messages": [
                     {
                         "type": "info",
@@ -74,7 +72,7 @@ def welcome_screen(login_name: str):
 
 
 if __name__ == "__main__":
-    state = welcome_screen()
+    """state = welcome_screen()
 
     # EVENT LOOP:
     should_quit = False
@@ -82,3 +80,4 @@ if __name__ == "__main__":
         input_string = input("Give a command: ")
         command = Command(input_string)
         command.run(state)
+        """
