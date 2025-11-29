@@ -1,4 +1,3 @@
-import json
 import sys
 import os
 
@@ -9,9 +8,9 @@ from flask import Flask, jsonify
 from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 cors = CORS(app)
-#app.config["CORS_HEADERS"] = "no-cors"
 
 
+# Endpoint loginille ja sallitaan cors
 @app.route("/login/<username>", methods=["POST"])
 @cross_origin()
 def login(username: str):
