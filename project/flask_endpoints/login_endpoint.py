@@ -10,9 +10,10 @@ app = Flask(__name__)
 cors = CORS(app)
 
 
-# Endpoint loginille ja sallitaan cors
+# Endpoint front-endista suoritettavalle loginille, palauttaa gamestaten
 @app.route("/login/<username>", methods=["POST"])
 @cross_origin()
+
 def login(username: str):
     state = welcome_screen(username)
     return jsonify(state)
