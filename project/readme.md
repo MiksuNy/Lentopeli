@@ -7,7 +7,7 @@ Kirjaa käyttäjän sisään ja palauttaa pelitilan.
 Jos käyttäjää ei ole olemassa, luo uuden käyttäjän ja palauttaa uuden pelitilan.
 
 
-login(username) return value
+play_game.js: login(username) return value
 
 Success Response
 ```{
