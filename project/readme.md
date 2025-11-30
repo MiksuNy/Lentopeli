@@ -1,4 +1,4 @@
-POST /login/<username>
+`POST /login/<username>`
 
 Kirjaa käyttäjän sisään ja palauttaa pelitilan.
 
