@@ -10,7 +10,6 @@ def welcome_screen(login_name: str = "") -> dict:
     #login_name = input("Username: ")
     is_returning_user = db.query(f"SELECT screen_name, id FROM game WHERE screen_name = '{login_name}';")
     location = db.query(f"SELECT location FROM game WHERE screen_name = '{login_name}';")
-    print(location[0][0])
     if is_returning_user:
         state = GameState(is_returning_user[0][1])
         print(f"Welcome back, {state.name}!")
@@ -30,7 +29,7 @@ def welcome_screen(login_name: str = "") -> dict:
                         "countryName": None
                     },
                     "quota": state.quota,
-                    "balance": state.wallet.balance if state.wallet.balance else 0,
+                    "balance": state.wallet.balance[0][0] if state.wallet.balance[0][0] else 0,
                     "messages": [
                         {
                             "type": "info",
@@ -88,6 +87,7 @@ def welcome_screen(login_name: str = "") -> dict:
         except Exception as e:
             return {"Exception": e}
 
+        GameState(id)
         return game_state_dict
 
 
