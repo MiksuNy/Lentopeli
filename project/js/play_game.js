@@ -86,23 +86,22 @@ async function handleLogin(username) {
 // Haetaan endpointilta gameState eli suoritetaan varsinainen 'login' ja kommunikointi backendin kanssa
 async function login(username) {
     let gameState;
+    let response = null;
     const endpointUrl = 'http://127.0.0.1:5000/login/';
     try {
-        const response = await fetch(endpointUrl + username, {
+        response = await fetch(endpointUrl + username, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
+
         // Sijoitetaan backendista tuleva gamestate muuttujaan myöhempää käyttöä varten
         gameState = await response.json();
-        console.log(gameState)
-        return gameState;
-
+        return gameState
 
     } catch (error) {
-        console.log(error)
-        return error;
+        return {"Error": error};
     }
 }
 
