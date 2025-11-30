@@ -1,136 +1,152 @@
-"use-strict";
-const mainMenuElmnt = document.getElementById("mainMenu")
-const loginPageElmnt = document.getElementById("loginScreen")
-const buttons = document.getElementsByClassName("buttons")
-const loginBtn = document.createElement("button")
-const backBtn = document.createElement("button")
-const input = document.createElement("input");
-const form = document.getElementById("loginForm")
-const playGameBtn = document.createElement("button")
-const quitGameBtn = document.createElement("button")
+'use-strict';
 
-
+const mainMenuElmnt = document.getElementById('mainMenu');
+const loginPageElmnt = document.getElementById('loginScreen');
+const buttons = document.getElementsByClassName('buttons');
+const loginBtn = document.createElement('button');
+const backBtn = document.createElement('button');
+const input = document.createElement('input');
+const form = document.getElementById('loginForm');
+const playGameBtn = document.createElement('button');
+const quitGameBtn = document.createElement('button');
 
 // Funktio piilottaa muut divit ja asettaa funktiolle annetun argumentin näkyväksi
-function setView(view){
-    document.querySelectorAll(".view").forEach(v => {
-        v.classList.remove("active")
-    })
-    form.reset()
-    view.classList.add("active")
-    loginBtn.textContent = "Login";
+function setView(view) {
+    document.querySelectorAll('.view').forEach(v => {
+        v.classList.remove('active');
+    });
+    form.reset();
+    view.classList.add('active');
+    loginBtn.textContent = 'Login';
 }
 
 // Funktio animoituun siirtymään näkymien välillä
-function startViewWithTransition (view){
+function startViewWithTransition(view) {
     document.startViewTransition(() => {
-        setView(view)
-    })
+        setView(view);
+    });
 }
 
 // Main menu div sisältö ja kuuntelijat quit game, play game buttoneille
 async function MainMenu() {
 
-    playGameBtn.className = "btn";
-    playGameBtn.type = "button";
-    playGameBtn.value = "play";
-    playGameBtn.textContent = "Play Game";
-    quitGameBtn.className = "btn";
-    quitGameBtn.type = "button";
-    quitGameBtn.value = "quit";
-    quitGameBtn.textContent = "Quit Game"
-    buttons[0].append(playGameBtn, quitGameBtn)
+    playGameBtn.className = 'btn';
+    playGameBtn.type = 'button';
+    playGameBtn.value = 'play';
+    playGameBtn.textContent = 'Play Game';
+    quitGameBtn.className = 'btn';
+    quitGameBtn.type = 'button';
+    quitGameBtn.value = 'quit';
+    quitGameBtn.textContent = 'Quit Game';
+    buttons[0].append(playGameBtn, quitGameBtn);
 
 }
 
 // Login page div sisältö
 async function LoginPage() {
-    const header = document.createElement("header");
-    const h1 = document.createElement("h1");
-    const buttonsClass = document.querySelectorAll(".buttons")
+    const header = document.createElement('header');
+    const h1 = document.createElement('h1');
+    const buttonsClass = document.querySelectorAll('.buttons');
 
-    h1.className = "loginPageH1";
-    h1.textContent = "Login";
-    input.type = "text";
-    input.placeholder = "Type your username";
-    input.name = "username";
-    input.id = "unameInput"
+    h1.className = 'loginPageH1';
+    h1.textContent = 'Login';
+    input.type = 'text';
+    input.placeholder = 'Type your username';
+    input.name = 'username';
+    input.id = 'unameInput';
 
-    loginBtn.textContent = "Login";
-    loginBtn.type = "submit";
-    loginBtn.className = "btn";
-    backBtn.textContent = "Back";
-    backBtn.className = "btn";
+    loginBtn.textContent = 'Login';
+    loginBtn.type = 'submit';
+    loginBtn.className = 'btn';
+    backBtn.textContent = 'Back';
+    backBtn.className = 'btn';
 
     header.appendChild(h1);
-    loginPageElmnt.insertAdjacentElement("afterbegin", header);
-    form.append(input, loginBtn)
-    loginPageElmnt.appendChild(buttonsClass[1])
-    buttons[1].appendChild(backBtn)
+    loginPageElmnt.insertAdjacentElement('afterbegin', header);
+    form.append(input, loginBtn);
+    loginPageElmnt.appendChild(buttonsClass[1]);
+    buttons[1].appendChild(backBtn);
 
 }
+
 // Palauttaa true jos käyttäjänimi sisältää kiellettyjä sanoja, muuten false
 function containsBadWords(username) {
-    const kirosanat = ["vittu", "perkele", "saatana", "paska", "helvetti"]
-    return (kirosanat.some(kirosana => username.trim().toLowerCase().includes(kirosana)))
+    const kirosanat = ['vittu', 'perkele', 'saatana', 'paska', 'helvetti'];
+    return (kirosanat.some(
+        kirosana => username.trim().toLowerCase().includes(kirosana)));
 }
 
-// Muutetaan loginBtn text contentiksi "Logging in.." ja otetaan pois käytöstä kirjautumisen ajaksi
-function handleLogin() {
-    loginBtn.textContent = "Logging in.."
+// Näytetään "Logging in.." käyttäjälle ja kutsutaan login funktiota joka ottaa yhteyden backendiin
+async function handleLogin(username) {
+    loginBtn.textContent = 'Logging in..';
     loginBtn.disabled = true;
+    return await login(username.trim());
 }
 
 // Haetaan endpointilta gameState eli suoritetaan varsinainen 'login' ja kommunikointi backendin kanssa
-async function login (username) {
-    handleLogin()
-    const endpointUrl = "http://127.0.0.1:5000/login/"
-    const response = await fetch(endpointUrl+username, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        }
-    })
-    // Sijoitetaan backendista tuleva gamestate muuttujaan myöhempää käyttöä varten
-    const gameState = await response.json()
-    console.log(gameState)
+async function login(username) {
+    let gameState;
+    const endpointUrl = 'http://127.0.0.1:5000/login/';
+    try {
+        const response = await fetch(endpointUrl + username, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        // Sijoitetaan backendista tuleva gamestate muuttujaan myöhempää käyttöä varten
+        gameState = await response.json();
+        console.log(gameState)
+        return gameState;
+
+
+    } catch (error) {
+        console.log(error)
+        return error;
+    }
 }
+
 // Määritellään kuuntelijat buttoneille ja inputille
 function addListeners() {
-
-    quitGameBtn.addEventListener("click", () => window.close());
-    playGameBtn.addEventListener("click", () => startViewWithTransition(loginPageElmnt));
-    backBtn.addEventListener("click", () => startViewWithTransition(mainMenuElmnt))
-    input.addEventListener("input", () => {
-        input.setCustomValidity("")
-    })
-    loginBtn.addEventListener("click", function(evt) {
-        evt.preventDefault()
-        input.setCustomValidity("")
+    quitGameBtn.addEventListener('click', () => window.close());
+    playGameBtn.addEventListener('click',
+        () => startViewWithTransition(loginPageElmnt));
+    backBtn.addEventListener('click',
+        () => startViewWithTransition(mainMenuElmnt));
+    input.addEventListener('input', () => {
+        input.setCustomValidity('');
+    });
+    loginBtn.addEventListener('click', function(evt) {
+        evt.preventDefault();
+        input.setCustomValidity('');
         const isBadWords = containsBadWords(input.value);
+
         // Jos käyttäjänimi tyhjä, asetetaan huomautusviesti
-        if (input.value === "") {
-            input.setCustomValidity("Tarkista käyttäjänimi!")
+        if (input.value === '') {
+            input.setCustomValidity('Tarkista käyttäjänimi!');
         }
+
         // Jos käyttäjä syöttää kirosanan, huomautetaan myös siitä
         else if (isBadWords) {
-            input.setCustomValidity("Ei kirosanoja!")
+            input.setCustomValidity('Ei kirosanoja!');
         }
+
         // Jos checkValidity on false, näytetään käyttäjälle jompi kumpi ylläolevista viesteistä
         if (!input.checkValidity()) {
-            form.reportValidity()
+            form.reportValidity();
         }
-        // Kutstutaan login funktiota jos username validi
+
+        // Kutstutaan handleLogin funktiota jos username validi
         else {
-            login(input.value);
+            handleLogin(input.value);
         }
-    })
+    });
 }
 
-function playGameMain(){
-    MainMenu()
-    LoginPage()
-    addListeners()
+function playGameMain() {
+    MainMenu();
+    LoginPage();
+    addListeners();
 }
 
-playGameMain()
+playGameMain();
