@@ -32,8 +32,8 @@ Success Response
 }
 ```
 
-```
 Error Response
+```
 {
     "Error": error
 }
