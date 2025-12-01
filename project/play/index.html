@@ -1,0 +1,50 @@
+<head>
+
+    <script src="gameview.js" defer></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+    <script src="rotatedMarker.js"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<html>
+    <body>
+        <div class="store">
+            <div class="button" id="close-store-button">X</div>
+            <h1 class="store-title">STORE</h1>
+            <div class="container" id="store-title-bar">
+                <h2 class="scrollmenu-title">AIRPLANES FOR SALE</h2>
+                <h2 class="scrollmenu-title">OWNED AIRPLANES</h2>
+            </div>
+            <div class="container" id="scrollmenus">
+                <div class="scrollmenu"></div>
+                <div class="scrollmenu"></div>
+            </div>
+            
+        </div>
+        <div id="map"></div>
+        <div class="container">
+            <div id="storecont">
+                <div class="button" id="store-button">
+                    <h2>STORE</h2>
+                </div>
+            </div>
+            <div id="countercont">
+                <div class="counter" id="money_counter">
+                    <h2>Money</h2>
+                    <p id="money_amount">123</p>
+                </div>
+                <div class="counter" id="day_counter">
+                    <h2>Days</h2>
+                    <p id="days_amount">123</p>
+                </div>
+            </div>
+        </div>    
+    </body>
+</html>
