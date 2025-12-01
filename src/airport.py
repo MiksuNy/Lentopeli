@@ -22,7 +22,7 @@ class AirportManager:
             balance = game_state.wallet.balance[0][0]
             if item.cost <= balance:
                 self.db.query(f"INSERT INTO owns_airport (game_id, airport_ident) VALUES ({game_state.id}, '{ident}');")
-                print(f"Congratulations, you now own {self.db.query(f"SELECT name FROM airport WHERE ident = '{ident}';")[0][0]}.")
+                print(f"""Congratulations, you now own {self.db.query(f"SELECT name FROM airport WHERE ident = '{ident}';")[0][0]}.""")
             else:
                 print("Sorry, you cannot afford this right now.")
         else:
