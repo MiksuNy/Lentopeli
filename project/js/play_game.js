@@ -80,7 +80,8 @@ function containsBadWords(username) {
 async function handleLogin(username) {
     loginBtn.textContent = 'Logging in..';
     loginBtn.disabled = true;
-    return await login(username.trim());
+    window.location = "play/index.html"
+    //return await login(username.trim());
 }
 
 // Haetaan endpointilta gameState eli suoritetaan varsinainen 'login' ja kommunikointi backendin kanssa

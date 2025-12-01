@@ -93,3 +93,8 @@ div.scrollmenu {
     text-align: center;
 }
 
+#mutebtn {
+    right: 0;
+    position: absolute;
+    z-index: 1000000000000;
+}

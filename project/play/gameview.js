@@ -13,7 +13,7 @@ var airplane_icon = L.icon({
 var airport_icon = L.icon({
     iconUrl: '../res/airport.png',
     iconSize:     [32, 32],
-    popupAnchor:  [12, 12]
+    popupAnchor:  [-10, -10]
 })
 
 
@@ -44,6 +44,21 @@ marker.setRotationAngle(45)
 var marker2 = L.marker([51.515, -0.19], {icon: airport_icon}).addTo(map)
     .bindPopup("Lentokenttä")
     .on('click', clickedAirport)
+
+var audio = new Audio("../res/bg.wav");
+
+document.getElementById("mutebtn").addEventListener("click", function(event) {
+    if (audio.paused || audio.volume == 0.0) {
+        document.getElementById("mute-icon").setAttribute("src", "../res/unmute.png")
+        audio.play()
+        audio.volume = 1
+    }
+    else {
+        audio.volume = 0.0
+        document.getElementById("mute-icon").setAttribute("src", "../res/mute.png")
+    }
+})
+
 
 
 
