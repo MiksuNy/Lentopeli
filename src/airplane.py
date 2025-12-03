@@ -5,14 +5,14 @@ from state import *
 
 class AirplaneManager:
     def __init__(self):
-        self.all_airplanes = []
+        self.airplanes = []
         self.db: Database = Database()
         self.db.connect()
 
     def spawn(self, amount):
         locations = self.db.query(f"SELECT name FROM airport WHERE type != 'heliport' OR 'closed' OR 'ballonport' ORDER BY RAND() LIMIT {amount};")
         for location in locations:
-            self.all_airplanes.append(Airplane(random.choice(list(AirplaneType)), location))
+            self.airplanes.append(Airplane(random.choice(list(AirplaneType)), location))
 
     def buy(self, airplane_type, game_state):
         cost = 1000 # Hard coded value for now, replace this with actual airplane costs
@@ -20,15 +20,15 @@ class AirplaneManager:
         if owned_airports == None:
             print("You need to own an airport to buy airplanes!")
         elif game_state.wallet.get_balance() >= cost:
-            self.all_airplanes.append(Airplane(airplane_type, owned_airports[0], True))
+            self.airplanes.append(Airplane(airplane_type, owned_airports[0], True))
 
     def move_all(self):
         destinations = self.db.query(f"SELECT name FROM airport WHERE type != 'heliport' OR 'closed' OR 'ballonport' ORDER BY RAND() LIMIT {len(self.all_airplanes)};")
         for i in range(len(destinations)):
-            self.all_airplanes[i].location = destinations[i]
+            self.airplanes[i].location = destinations[i]
 
     def get_owned(self):
-        return [item for item in self.all_airplanes if item.owned_by_player == True]
+        return [item for item in self.airplanes if item.owned_by_player == True]
 
 class AirplaneType(Enum):
     PASSENGER = "passenger"
