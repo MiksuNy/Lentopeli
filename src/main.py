@@ -2,12 +2,11 @@ from airport import *
 from command import Command
 import random
 
-db: Database = Database()
-db.connect()
-
 # login_name parametrille arvo tulee front-endiltä
-def welcome_screen(login_name: str = "") -> dict:
-    #login_name = input("Username: ")
+def init_game(login_name: str = "") -> dict:
+    db: Database = Database()
+    db.connect()
+
     is_returning_user = db.query(f"SELECT screen_name, id FROM game WHERE screen_name = '{login_name}';")
     location = db.query(f"SELECT location FROM game WHERE screen_name = '{login_name}';")
     if is_returning_user:
@@ -89,16 +88,3 @@ def welcome_screen(login_name: str = "") -> dict:
 
         GameState(id)
         return game_state_dict
-
-
-if __name__ == "__main__":
-    # Kutsutaan welcome_screenia login endpointista aina kun käyttäjä kirjautuu
-
-    """state = welcome_screen()
-
-    # EVENT LOOP:
-    should_quit = False
-    while should_quit == False:
-        input_string = input("Give a command: ")
-        command = Command(input_string)
-        command.run(state)"""

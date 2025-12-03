@@ -1,5 +1,4 @@
 from enum import Enum
-from state import *
 
 class Command(Enum):
     BUY_AIRPLANE = "buy airplane"
