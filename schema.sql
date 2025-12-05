@@ -10,3 +10,5 @@ CREATE TABLE owns_airport (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 ALTER TABLE game ADD seed BINARY(64);
+
+-- TODO: Lentokone taulu?
