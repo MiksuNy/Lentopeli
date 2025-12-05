@@ -2,35 +2,8 @@ from db import *;
 from state import *;
 import random
 
-class AirportManager:
-    def __init__(self):
-        self.db: Database = Database()
-        self.db.connect()
-
-        self.airports = []
-    
-    def get_owned(self, state):
-        owned = []
-        res = self.db.query(f"SELECT airport_ident FROM owns_airport WHERE game_id = '{state.id}';")
-        for i in range(len(res)):
-            airport: Airport = Airport(res[i][0], state.seed)
-            owned.append(airport)
-        return owned
-    
-    def get_all(self, state):
-        res = self.db.query(f"SELECT ident FROM airport;")
-        for i in range(len(res)):
-            self.airports.append(Airport(res[i][0], state.seed))
-
-    def buy(self, state, ident):
-        if self.db.query(f"SELECT ident FROM airport WHERE ident = '{ident}';"):
-            item: Airport = Airport(ident, state.seed)
-            balance = state.get_balance()
-            if item.cost <= balance:
-                self.db.query(f"INSERT INTO owns_airport (game_id, airport_ident) VALUES ({state.id}, '{ident}');")
-
 class Airport:
-    def __init__(self, ident, seed):
+    def __init__(self, ident, seed, db):
         self.name = None
         self.ident = None
         self.iso_country = None
@@ -38,7 +11,7 @@ class Airport:
         self.cost = None
         self.type = None
 
-        self.name, self.ident, self.iso_country, self.country, self.type = self.db.query(f"SELECT airport.name, airport.ident, airport.iso_country, country.name, airport.type FROM airport JOIN country ON airport.iso_country = country.iso_country WHERE ident = '{ident}';")[0]
+        self.name, self.ident, self.iso_country, self.country, self.type = db.query(f"SELECT airport.name, airport.ident, airport.iso_country, country.name, airport.type FROM airport JOIN country ON airport.iso_country = country.iso_country WHERE ident = '{ident}';")[0]
 
         random.seed(bytes(seed) + bytes(self.ident, "utf-8"))
         self.cost = 10000 + random.randint(5000, 15000)

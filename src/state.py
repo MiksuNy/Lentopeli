@@ -1,13 +1,11 @@
 import random
-from airplane import AirplaneManager
-from airport import AirportManager
+from airplane import *
+from airport import *
 from db import Database
-from event import EventManager
-
 
 class GameState:
     def __init__(self):
-        self.id = id
+        self.id = None
         self.name = None
         self.starting_ICAO = None
         self.co2_budget = None
@@ -15,17 +13,13 @@ class GameState:
         self.balance = None
         self.seed = None
 
-        self.event_manager = EventManager()
-        self.airport_manager = AirportManager()
-        self.airplane_manager = AirplaneManager()
-
         self.db: Database = Database()
         self.db.connect()
     
     def init_game(self, login_name) -> dict:
         is_returning_user = self.db.query(f"SELECT screen_name, id FROM game WHERE screen_name = '{login_name}';")
         if is_returning_user:
-            self.name, self.co2_consumed, self.co2_budget, self.quota, self.seed = self.db.query(f"SELECT screen_name, co2_consumed, co2_budget, quota, seed FROM game WHERE id = '{is_returning_user[0][1]}';")[0]
+            self.id, self.name, self.co2_consumed, self.co2_budget, self.quota, self.seed = self.db.query(f"SELECT id, screen_name, co2_consumed, co2_budget, quota, seed FROM game WHERE id = '{is_returning_user[0][1]}';")[0]
             
             game_state_dict = {
                 "newUser": False,
@@ -37,7 +31,7 @@ class GameState:
                     "quota": self.quota,
                     "balance": self.get_balance(),
                     "ownedAirplanes": None,
-                    "ownedAirports": None
+                    "ownedAirports": self.get_owned_airports()
                 }
             }
             return game_state_dict
@@ -47,8 +41,7 @@ class GameState:
             game_seed = random.getrandbits(64)
             self.db.query(f"INSERT INTO game (id, co2_consumed, co2_budget, location, screen_name, balance, seed) VALUES ({id}, 0, 10000, '{starting_ICAO}', '{login_name}', 100000, {game_seed});")
             self.db.query(f"INSERT INTO owns_airport (airport_ident, game_id) VALUES('{starting_ICAO}', '{id}');")
-            starting_port_meta = self.db.query(f"SELECT airport.name, country.name FROM airport JOIN country ON airport.iso_country = country.iso_country WHERE ident = '{starting_ICAO}';")
-            
+
             game_state_dict = {
                 "newUser": True,
                 "gameState": {
@@ -59,10 +52,10 @@ class GameState:
                     "quota": "",
                     "balance": 100000,
                     "ownedAirplanes": None,
-                    "ownedAirports": self.airport_manager.airports.append(self.db.query("SELECT ident FROM airport WHERE type = 'small_airport' ORDER BY RAND() LIMIT 1;")[0][0])
+                    "ownedAirports": self.db.query("SELECT ident FROM airport WHERE type = 'small_airport' ORDER BY RAND() LIMIT 1;")[0][0]
                 }
             }
-        return self
+            return game_state_dict
 
     def subtract_balance(self, amount):
         self.db.query(f"UPDATE game SET balance = balance - {amount} WHERE id = '{self.id}';")
@@ -71,7 +64,16 @@ class GameState:
         self.db.query(f"UPDATE game SET balance = balance + {amount} WHERE id = '{self.id}';")
     
     def get_balance(self):
-        return self.db.query(f"SELECT balance FROM game WHERE id = '{self.id}';")[0][0]
-    
+        return self.db.query(f"SELECT balance FROM game WHERE id = '{self.id}';")
+
     def get_screen_name(self):
-        return self.db.query(f"SELECT screen_name FROM game WHERE id = '{self.id}';")[0][0]
+        return self.db.query(f"SELECT screen_name FROM game WHERE id = '{self.id}';")
+
+    def get_all_airports(self):
+        return self.db.query(f"SELECT * FROM airport;")
+    
+    def get_owned_airports(self):
+        owned = []
+        res = self.db.query(f"SELECT airport_ident FROM owns_airport WHERE game_id = '{self.id}';")
+        for ident in res:
+            owned.append(self.db.query(f"SELECT * FROM airport WHERE ident = '{ident}';"))
