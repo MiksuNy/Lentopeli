@@ -1,3 +1,5 @@
+const api = "http://127.0.0.1:5000"
+
 function clickedAirport(e) {
     console.log(e)
 }
@@ -59,27 +61,42 @@ document.getElementById("mutebtn").addEventListener("click", function(event) {
     }
 })
 
-function counters(){
-    document.getElementById("money_amount").innerText = getCookie("state".money)
+async function updateCounters(){
+    var money = NaN
+    var days = 0
+
+    money = await fetch(api + "/balance/get")
+        .then((response) => {
+            if (!response.ok) {
+                alert("KYS");
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+            return response.json()
+        })
+        .then((res) => {
+            console.log(res)
+            document.getElementById("money_amount").innerText = res
+        }
+    )
 }
 
-function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for(let i = 0; i <ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
+async function drawOwnedAirports() {
+fetch(api + "/airports/getOwned")
+    .then((response) => {
+        if (!response.ok){
+            alert("Something went wrong")
+            throw new Error(`HTTP Error: ${response.status}`);
+        }
+        return response.json()
+    })
+    .then((json) => {
+        console.log(json[0][4] + json[0][5])
+    })
 }
 
-counters()
+
+updateCounters()
+drawOwnedAirports()
 
 
 

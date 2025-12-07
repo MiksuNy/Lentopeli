@@ -1,53 +1,67 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 from flask_cors import CORS, cross_origin
 from state import GameState
+from transaction import TransactionManager
 
 app = Flask(__name__)
 cors = CORS(app)
 
-state = GameState()
+trmg = TransactionManager()
+
+@app.before_request
+def middleware():
+    if request.endpoint in ['exempt_route']:
+        return
+    if not request.headers.get("id"):
+        return jsonify({"error": "missing required header [id]"}), 400
 
 # Endpoint front-endista suoritettavalle loginille, palauttaa gamestaten
-@app.route("/login/<login_name>", methods=["POST"])
+@app.route("/login/<username>", methods=["POST"], endpoint='exempt_route')
 @cross_origin()
-def login(login_name: str):
-    return state.init_game(login_name)
+def login(username: str):
+    if not trmg.check_game_exists(username):
+        trmg.create_game(username)
+    return trmg.get_game_id(username), 200
 
 
 
-@app.route("/airports/getAll", methods=["GET"])
-@cross_origin()
-def get_all_airports():
-    return jsonify(state.get_all_airports())
+# funktio palauttaa niin ison listan et selain jäätyy
+
+# @app.route("/airports/getAll", methods=["GET"])
+# @cross_origin()
+# def get_all_airports():
+#     return jsonify(state.get_all_airports())
 
 @app.route("/airports/getOwned", methods=["GET"])
 @cross_origin()
 def get_owned_airports():
-    return jsonify(state.get_owned_airports())
+    return jsonify(trmg.get_owned_airports(request.headers.get("id"))), 200
 
 
 
 @app.route("/balance/get", methods=["GET"])
 @cross_origin()
 def get_balance():
-    return jsonify(state.get_balance())
+    return jsonify(trmg.get_balance(request.headers.get("id"))), 200
 
 @app.route("/balance/add/<int:amount>", methods=["POST"])
 @cross_origin()
 def add_balance(amount: int):
-    state.add_balance(amount)
+    trmg.add_balance(request.headers.get("id"), amount)
+    return Response('', status=200)
 
 @app.route("/balance/subtract/<int:amount>", methods=["POST"])
 @cross_origin()
 def subtract_balance(amount: int):
-    state.subtract_balance(amount)
+    trmg.subtract_balance(request.headers.get("id"), amount)
+    return Response('', status=200)
 
 
 
 @app.route("/player/getScreenName", methods=["GET"])
 @cross_origin()
 def get_screen_name():
-    return jsonify(state.get_screen_name())
+    return jsonify(trmg.get_username(request.headers.get("id"))), 200
 
 
 
