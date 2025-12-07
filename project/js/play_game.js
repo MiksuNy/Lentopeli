@@ -90,14 +90,12 @@ async function handleLogin(username) {
             alert("Login failed");
             throw new Error(`HTTP Error: ${response.status}`);
         }
-        return response.text();  // Tää on ihan VITUN tyhmää. FUCK javascript. 
+        return response.json();  // Tää on ihan VITUN tyhmää. FUCK javascript. 
     })
-    .then((text) => {
-        console.log("KILL ME! KILL ME NOW!")
+    .then((id) => {
+        document.cookie = "id=" + id[0][0]
+        window.location = "./play/index.html"
     });
-
-    document.cookie = "username=" + username
-    window.location = "./play/index.html"
 
 }
 

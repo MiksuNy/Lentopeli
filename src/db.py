@@ -1,36 +1,38 @@
 import mysql.connector
+from mysql.connector.pooling import MySQLConnectionPool
 from dotenv import load_dotenv
 import os
 
-class DatabaseMeta:
-    def __init__(self):
-        self.host: str = os.getenv("MYSQL_HOST")
-        self.user: str = os.getenv("MYSQL_USER")
-        self.password: str = os.getenv("MYSQL_PASS")
 
 class Database:
     def __init__(self):
         load_dotenv()
-        self.meta: DatabaseMeta = DatabaseMeta()
-        self.conn = None
-
-
-    def connect(self):
-        conn = mysql.connector.connect(
-            host=self.meta.host,
-            user=self.meta.user,
-            password=self.meta.password,
+        self.pool = MySQLConnectionPool(
+            pool_name="flight_pool",
+            pool_size=5,
+            host=os.getenv("MYSQL_HOST"),
+            user=os.getenv("MYSQL_USER"),
+            password=os.getenv("MYSQL_PASS"),
             database="flight_game"
         )
-        self.conn = conn
-    
-    def disconnect(self):
-        self.conn.close()
-        self.conn = None
 
-    def query(self, sql: str):
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        res = cur.fetchall()
-        self.conn.commit()
-        return res
+    def get_conn(self):
+        return self.pool.get_connection()
+
+    def query_all(self, sql: str, params=None):
+        conn = self.get_conn()
+        try:
+            with conn.cursor(buffered=True) as cursor:
+                cursor.execute(sql, params or ())
+                return cursor.fetchall()
+        finally:
+            conn.close()
+
+    def execute(self, sql: str, params=None):
+        conn = self.get_conn()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(sql, params or ())
+            conn.commit()
+        finally:
+            conn.close()

@@ -12,8 +12,9 @@ trmg = TransactionManager()
 def middleware():
     if request.endpoint in ['exempt_route']:
         return
-    if not request.headers.get("id"):
-        return jsonify({"error": "missing required header [id]"}), 400
+    print(request.view_args)
+    if not request.view_args or 'id' not in request.view_args:
+        return jsonify({"error": "missing required argument [id]"}), 400
 
 # Endpoint front-endista suoritettavalle loginille, palauttaa gamestaten
 @app.route("/login/<username>", methods=["POST"], endpoint='exempt_route')
@@ -32,17 +33,17 @@ def login(username: str):
 # def get_all_airports():
 #     return jsonify(state.get_all_airports())
 
-@app.route("/airports/getOwned", methods=["GET"])
+@app.route("/airports/getOwned/<id>", methods=["GET"])
 @cross_origin()
-def get_owned_airports():
-    return jsonify(trmg.get_owned_airports(request.headers.get("id"))), 200
+def get_owned_airports(id):
+    return jsonify(trmg.get_owned_airports(id)), 200
 
 
 
-@app.route("/balance/get", methods=["GET"])
+@app.route("/balance/get/<id>", methods=["GET"])
 @cross_origin()
-def get_balance():
-    return jsonify(trmg.get_balance(request.headers.get("id"))), 200
+def get_balance(id):
+    return jsonify(trmg.get_balance(id)), 200
 
 @app.route("/balance/add/<int:amount>", methods=["POST"])
 @cross_origin()
