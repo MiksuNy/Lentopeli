@@ -36,7 +36,7 @@ class GameState:
             }
             return game_state_dict
         else:
-            id = int(self.db.query("SELECT id FROM game ORDER BY id DESC LIMIT 1;")[0][0]) + 1
+            id = int(self.db.query("SELECT id FROM game ORDER BY CAST(id AS UNSIGNED) DESC LIMIT 1;")[0][0]) + 1
             starting_ICAO = self.db.query("SELECT ident FROM airport WHERE type = 'small_airport' ORDER BY RAND() LIMIT 1;")[0][0]
             game_seed = random.getrandbits(64)
             self.db.query(f"INSERT INTO game (id, co2_consumed, co2_budget, location, screen_name, balance, seed) VALUES ({id}, 0, 10000, '{starting_ICAO}', '{login_name}', 100000, {game_seed});")
@@ -75,6 +75,8 @@ class GameState:
     def get_owned_airports(self):
         owned = []
         res = self.db.query(f"SELECT airport_ident FROM owns_airport WHERE game_id = '{self.id}';")
+        print(f"SELECT airport_ident FROM owns_airport WHERE game_id = '{self.id}';")
         for ident in res:
-            print(f"SELECT * FROM airport WHERE ident = '{ident}';")
+            print(f"SELECT * FROM airport WHERE ident = '{ident[0]}';")
             owned.append(self.db.query(f"SELECT * FROM airport WHERE ident = '{ident[0]}';"))
+        return owned

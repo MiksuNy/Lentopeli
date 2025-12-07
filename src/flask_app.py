@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from state import GameState
 
@@ -6,8 +6,6 @@ app = Flask(__name__)
 cors = CORS(app)
 
 state = GameState()
-
-
 
 # Endpoint front-endista suoritettavalle loginille, palauttaa gamestaten
 @app.route("/login/<login_name>", methods=["POST"])
