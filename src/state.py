@@ -76,4 +76,5 @@ class GameState:
         owned = []
         res = self.db.query(f"SELECT airport_ident FROM owns_airport WHERE game_id = '{self.id}';")
         for ident in res:
-            owned.append(self.db.query(f"SELECT * FROM airport WHERE ident = '{ident}';"))
+            print(f"SELECT * FROM airport WHERE ident = '{ident}';")
+            owned.append(self.db.query(f"SELECT * FROM airport WHERE ident = '{ident[0]}';"))

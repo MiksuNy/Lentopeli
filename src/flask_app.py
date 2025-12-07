@@ -10,7 +10,7 @@ state = GameState()
 
 
 # Endpoint front-endista suoritettavalle loginille, palauttaa gamestaten
-@app.route("/login/<username>", methods=["POST"])
+@app.route("/login/<login_name>", methods=["POST"])
 @cross_origin()
 def login(login_name: str):
     return state.init_game(login_name)
