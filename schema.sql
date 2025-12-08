@@ -1,5 +1,6 @@
 ALTER TABLE game ADD quota INT;
 ALTER TABLE game ADD balance INT;
+ALTER TABLE game ADD turns INT;
 
 CREATE TABLE owns_airport (
     airport_ident VARCHAR(40) NOT NULL,
