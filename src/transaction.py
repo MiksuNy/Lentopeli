@@ -56,7 +56,6 @@ class TransactionManager:
             )
 
     def buy_airplane(self, game_id, airplane_id):
-        owned_airport_ident = self.db.query_all(f"SELECT airport_ident FROM owns_airport WHERE game_id = '{game_id}';")[0]
         price = self.db.query_all(f"SELECT price FROM airplane WHERE id = '{airplane_id}'")[0]
         if self.get_balance() >= price:
             self.db.execute(f"INSERT INTO owns_airplane (airplane_id, game_id) VALUES ('{airplane_id}', '{game_id}');")
@@ -65,7 +64,7 @@ class TransactionManager:
     def next_turn(self, game_id):
         self.db.query_all(f"UPDATE game SET turns = turns + 1 WHERE id = '{game_id}';")
 
-        airplane_ids = self.db.query_all(f"SELECT airplane_id FROM owns_airplane WHERE game_id = '{game_id}'")
-        for airplane_id in airplane_ids:
+        airplane_count = self.db.query_all(f"SELECT COUNT(*) FROM owns_airplane WHERE game_id = '{game_id}'")[0]
+        for _ in airplane_count:
             random_ICAO = self.db.query_all("SELECT ident FROM airport WHERE type = 'small_airport' ORDER BY RAND() LIMIT 1;")[0][0]
             self.db.execute(f"UPDATE airplane SET airport_ident = '{random_ICAO}' WHERE game_id = '{game_id}'")
