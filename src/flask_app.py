@@ -66,5 +66,25 @@ def get_screen_name():
 
 
 
+@app.route("/game/createAirplanes/<int:amount>", methods=["POST"])
+@cross_origin()
+def create_airplanes(amount: int):
+    trmg.create_airplanes(request.headers.get("id"), amount)
+    return Response('', status=200)
+
+@app.route("/game/buyAirplane/<airplane_id>", methods=["POST"])
+@cross_origin()
+def buy_airplane(airplane_id: int):
+    trmg.buy_airplane(request.headers.get("id"), airplane_id)
+    return Response('', status=200)
+
+@app.route("/game/nextTurn", methods=["POST"])
+@cross_origin()
+def next_turn():
+    trmg.next_turn(request.headers.get("id"))
+    return Response('', status=200)
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
