@@ -12,4 +12,17 @@ CREATE TABLE owns_airport (
 
 ALTER TABLE game ADD seed BINARY(64);
 
--- TODO: Lentokone taulu?
+CREATE TABLE airplane (
+    id VARCHAR(40) NOT NULL,
+    airplane_type VARCHAR(40) NOT NULL,
+    price INT NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+CREATE TABLE owns_airplane (
+    airplane_id VARCHAR(40) NOT NULL,
+    game_id VARCHAR(40) NOT NULL,
+    PRIMARY KEY (airplane_id, game_id),
+    FOREIGN KEY (airplane_id) REFERENCES airplane(id),
+    FOREIGN KEY (game_id) REFERENCES game(id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
