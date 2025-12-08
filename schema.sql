@@ -14,9 +14,13 @@ ALTER TABLE game ADD seed BINARY(64);
 
 CREATE TABLE airplane (
     id VARCHAR(40) NOT NULL,
+    game_id VARCHAR(40) NOT NULL, -- The id of the game in which this airplane can be used
+    airport_ident VARCHAR(40) NOT NULL,
     airplane_type VARCHAR(40) NOT NULL,
     price INT NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (game_id) REFERENCES game(id),
+    FOREIGN KEY (airport_ident) REFERENCES airport(ident)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 CREATE TABLE owns_airplane (
