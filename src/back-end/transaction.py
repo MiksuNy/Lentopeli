@@ -99,6 +99,9 @@ class TransactionManager:
         price = 10000 + random.randint(5000, 15000)
         return price
 
+    def get_airport(self, icao):
+        return self.db.query_all(f"SELECT * FROM airport WHERE ident='{icao}';")
+
     def validate_icao(self, icao) -> bool:
         if len(icao) != 4:
             return False
@@ -107,12 +110,12 @@ class TransactionManager:
         return True
 
     def next_turn(self, game_id):
-        self.db.execute(f"UPDATE game SET turns = turns + 1 WHERE id = '{game_id}';")
+        airplanes = self.db.query_all(f"SELECT airplane_id FROM owns_airplane WHERE game_id = '{game_id}'")
 
-        airplane_count = self.db.query_all(f"SELECT COUNT(*) FROM owns_airplane WHERE game_id = '{game_id}'")[0]
-        for _ in airplane_count:
+        self.db.execute(f"UPDATE game SET turns = turns + 1 WHERE id = '{game_id}';")
+        for i in range(len(airplanes)):
             random_ICAO = self.db.query_all("SELECT ident FROM airport WHERE type = 'small_airport' ORDER BY RAND() LIMIT 1;")[0][0]
-            self.db.execute(f"UPDATE airplane SET airport_ident = '{random_ICAO}' WHERE game_id = '{game_id}'")
+            self.db.execute(f"UPDATE airplane SET airport_ident = '{random_ICAO}' WHERE id = '{airplanes[i][0]}';")
     
     def check_pool_health(self):
         return self.db.check_pool_health()
