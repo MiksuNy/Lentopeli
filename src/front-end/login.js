@@ -164,4 +164,11 @@ function playGameMain() {
     addListeners();
 }
 
+function testBrowserCompat() {
+    if (typeof document.startViewTransition == "undefined") { 
+        document.getElementsByTagName("body")[0].innerHTML = "<h1>Your browser version is not supported</h1>"
+    }
+}
+
 playGameMain();
+testBrowserCompat();
