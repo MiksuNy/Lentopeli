@@ -5,6 +5,7 @@
     --btn-text: #FBDB93;
     --btn-hover-text: #641B2E;
     --btn-border: #641B2E;
+    overflow: hidden;
 }
 
 #mainMenuHeader {
