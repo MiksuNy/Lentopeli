@@ -19,7 +19,7 @@ limiter = Limiter(
 
 trmg = TransactionManager()
 
-EXEMPT_ENDPOINTS = {'login', 'airports_random', 'health'}
+EXEMPT_ENDPOINTS = {'login', 'airports_random', 'health', 'get_airport'}
 
 @app.before_request
 def middleware():
@@ -77,12 +77,16 @@ def get_owned_airports(id: int):
 
 @app.route("/airports/getPrice/<airport_ident>/<id>", methods=["GET"])
 @cross_origin()
-def getPrice(airport_ident: str, id: int):
+def get_airport_price(airport_ident: str, id: int):
     if (price := trmg.get_airport_price(id, airport_ident)):
         return jsonify(price), 200
     else:
         return Response('Invalid airport ID\n', status=400)
 
+@app.route("/airports/get/<airport_ident>", methods=["GET"])
+@cross_origin()
+def get_airport(airport_ident):
+    return jsonify(trmg.get_airport(airport_ident)), 200
 
 
 

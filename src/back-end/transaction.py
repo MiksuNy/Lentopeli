@@ -99,6 +99,9 @@ class TransactionManager:
         price = 10000 + random.randint(5000, 15000)
         return price
 
+    def getAirport(self, icao):
+        return self.db.query_all(f"SELECT * FROM airport WHERE ident='{icao}';")
+
     def validate_icao(self, icao) -> bool:
         if len(icao) != 4:
             return False
