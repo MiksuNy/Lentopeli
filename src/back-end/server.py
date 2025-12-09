@@ -127,6 +127,11 @@ def buy_airplane(airplane_id: int, id: int):
 def getAvailable(id):
     return jsonify(trmg.get_available_airplanes(id)), 200
 
+@app.route("/airplanes/getOwned/<id>", methods=["GET"])
+@cross_origin()
+def get_owned_airplanes(id: int):
+    return jsonify(trmg.get_owned_airplanes(id)), 200
+
 
 
 

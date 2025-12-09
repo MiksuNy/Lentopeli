@@ -1,4 +1,4 @@
-const api = "http://api.flight_game.com:8080"
+const api = "http://api.flight_game.com"
 
 
 var airplane_icon = L.icon({
