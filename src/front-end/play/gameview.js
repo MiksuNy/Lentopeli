@@ -1,4 +1,4 @@
-const api = "http://api.flight_game.com"
+const api = "http://api.flight_game.com:8080"
 
 
 var airplane_icon = L.icon({
@@ -82,6 +82,33 @@ async function updateCounters(){
     })
 }
 
+async function drawOwnedAirplanes() {
+    try {
+        const airplaneResponse = await fetch(api + "/airplanes/getOwned/" + getCookie("id"));
+
+        if (!airplaneResponse.ok) {
+            throw new Error(`HTTP Error: ${airplaneResponse.status}`);
+        }
+
+        const airplaneJson = await airplaneResponse.json();
+        console.log(airplaneJson);
+
+        for (i = 0; i < airplaneJson.length; i++){
+            const airportResponse = await fetch(api + "/airports/get/" + airplaneJson[i][2]);
+            if (!airportResponse.ok) {
+                throw new Error(`HTTP Error: ${airportResponse.status}`);
+            }
+            const airportJson = await airportResponse.json();
+            console.log(airportJson)
+            
+            var marker = L.marker([airportJson[0][4], airportJson[0][5]], {icon: airplane_icon, rotationAngle: Math.random() * 360.0}).bindPopup(airplaneJson[i][3] + " " + airplaneJson[i][0]).addTo(map)
+        }
+
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
+}
+
 async function drawOwnedAirports() {
     try {
         const response = await fetch(api + "/airports/getOwned/" + getCookie("id"));
@@ -109,7 +136,13 @@ async function nextTurn() {
         if (!response.ok) {
             throw new Error(`HTTP Error: ${response.status}`);
         } else {
-            console.log("Next turn")
+            map.eachLayer((layer) => {
+            if (layer instanceof L.Marker) {
+                layer.remove();
+            }});
+            drawOwnedAirplanes()
+            drawOwnedAirports()
+            updateCounters()
         }
 
     } catch (error) {
@@ -201,4 +234,5 @@ function getCookie(name) {
 initial_draw()
 updateCounters()
 drawOwnedAirports()
+drawOwnedAirplanes()
 populateStoreLists()
