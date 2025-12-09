@@ -50,8 +50,11 @@ class TransactionManager:
         return username
     
     def create_airplanes(self, game_id, amount):
-        for _ in amount:
-            airplane_id = int(self.db.query_all("SELECT id FROM airplane ORDER BY CAST(id AS UNSIGNED) DESC LIMIT 1;")[0][0]) + 1
+        for _ in range(amount):
+            try:
+                airplane_id = int(self.db.query_all("SELECT id FROM airplane ORDER BY CAST(id AS UNSIGNED) DESC LIMIT 1;")[0][0]) + 1
+            except:
+                airplane_id = 1
             airplane_type = random.choice(list(AirplaneType))
             price = random.randint(500, 1500)
             self.db.execute(
