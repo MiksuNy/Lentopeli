@@ -39,6 +39,21 @@ def login(username: str):
     return trmg.get_game_id(username), 200
 
 
+@app.route("/player/getScreenName/<id>", methods=["GET"])
+@cross_origin()
+def get_screen_name(id: int):
+    return jsonify(trmg.get_username(id)), 200
+
+@app.route("/game/nextTurn/<id>", methods=["POST"])
+@cross_origin()
+def next_turn(id: int):
+    trmg.next_turn(id)
+    return Response('', status=200)
+
+@app.route("/game/getCompletedTurns/<id>", methods=["GET"])
+@cross_origin()
+def get_completed_turns(id):
+    return jsonify(trmg.get_completed_turns(id)), 200
 
 
 @app.route("/airports/getRandomSet", methods=["GET"], endpoint='airports_random')
@@ -46,6 +61,28 @@ def login(username: str):
 def get_all_airports():
     print(trmg.get_random_set_airports())
     return jsonify(trmg.get_random_set_airports()), 200
+
+@app.route("/airports/buy/<airport_ident>/<id>", methods=["POST"])
+@cross_origin()
+def buy_airport(airport_ident: str, id: int):
+    if trmg.buy_airport(id, airport_ident):
+        return Response('', status=200)
+    else:
+        return Response('Insufficient funds or bad airport ID\n', status=403)
+
+@app.route("/airports/getOwned/<id>", methods=["GET"])
+@cross_origin()
+def get_owned_airports(id: int):
+    return jsonify(trmg.get_owned_airports(id)), 200
+
+@app.route("/airports/getPrice/<airport_ident>/<id>", methods=["GET"])
+@cross_origin()
+def getPrice(airport_ident: str, id: int):
+    if (price := trmg.get_airport_price(id, airport_ident)):
+        return jsonify(price), 200
+    else:
+        return Response('Invalid airport ID\n', status=400)
+
 
 
 
@@ -68,10 +105,6 @@ def subtract_balance(amount: int, id: int):
 
 
 
-@app.route("/player/getScreenName/<id>", methods=["GET"])
-@cross_origin()
-def get_screen_name(id: int):
-    return jsonify(trmg.get_username(id)), 200
 
 
 
@@ -89,38 +122,15 @@ def buy_airplane(airplane_id: int, id: int):
     else:
         return Response('Insufficient funds or bad airplane ID\n', status=403)
         
-
-@app.route("/airports/buy/<airport_ident>/<id>", methods=["POST"])
-@cross_origin()
-def buy_airport(airport_ident: str, id: int):
-    if trmg.buy_airport(id, airport_ident):
-        return Response('', status=200)
-    else:
-        return Response('Insufficient funds or bad airport ID\n', status=403)
-
-@app.route("/airports/getOwned/<id>", methods=["GET"])
-@cross_origin()
-def get_owned_airports(id: int):
-    return jsonify(trmg.get_owned_airports(id)), 200
-
-@app.route("/game/nextTurn/<id>", methods=["POST"])
-@cross_origin()
-def next_turn(id: int):
-    trmg.next_turn(id)
-    return Response('', status=200)
-
-@app.route("/airports/getPrice/<airport_ident>/<id>", methods=["GET"])
-@cross_origin()
-def getPrice(airport_ident: str, id: int):
-    if (price := trmg.get_airport_price(id, airport_ident)):
-        return jsonify(price), 200
-    else:
-        return Response('Invalid airport ID\n', status=400)
-
 @app.route("/airplanes/getAvailable/<id>", methods=["GET"])
 @cross_origin()
 def getAvailable(id):
     return jsonify(trmg.get_available_airplanes(id)), 200
+
+
+
+
+
 
 @app.route("/health", methods=["GET"], endpoint="health")
 @limiter.exempt

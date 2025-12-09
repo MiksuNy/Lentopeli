@@ -23,6 +23,9 @@ class TransactionManager:
         self.db.execute(f"INSERT INTO owns_airport (airport_ident, game_id) VALUES('{starting_ICAO}', '{id}');")
 
         return id
+
+    def get_completed_turns(self, id) -> int:
+        return self.db.query_all(f"SELECT turns FROM game WHERE id = '{id}';")[0][0]
     
     def get_owned_airports(self, id):
         owned = []

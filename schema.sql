@@ -30,3 +30,6 @@ CREATE TABLE owns_airplane (
     FOREIGN KEY (airplane_id) REFERENCES airplane(id),
     FOREIGN KEY (game_id) REFERENCES game(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE game MODIFY turns INT DEFAULT 0;
+UPDATE game SET turns = 0 WHERE turns IS NULL;
