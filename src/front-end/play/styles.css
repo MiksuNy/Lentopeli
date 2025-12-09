@@ -98,3 +98,22 @@ div.scrollmenu {
     position: absolute;
     z-index: 1000000000000;
 }
+
+.scrollmenu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: aqua;
+}
+
+.scrollmenu ul li {
+    width: 100%;
+    height: 32px;
+    background-color: aquamarine;
+}
+
+.scrollmenu ul li:hover {
+    width: 100%;
+    height: 32px;
+    background-color: rgb(86, 166, 139);
+}

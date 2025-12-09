@@ -58,10 +58,7 @@ function clickedAirport(e) {
 }
 
 async function updateCounters(){
-    var money = NaN
-    var days = 0
-    
-    money = await fetch(api + "/balance/get/" + getCookie("id"))
+    await fetch(api + "/balance/get/" + getCookie("id"))
     .then((response) => {
         if (!response.ok) {
             throw new Error(`HTTP Error: ${response.status}`);
@@ -71,8 +68,18 @@ async function updateCounters(){
     .then((res) => {
         console.log(res)
         document.getElementById("money_amount").innerText = res
-    }
-)
+    })
+    await fetch(api + "/game/getCompletedTurns/" + getCookie("id"))
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
+        }
+        return response.json()
+    })
+    .then((res) => {
+        console.log(res)
+        document.getElementById("days_amount").innerText = res
+    })
 }
 
 async function drawOwnedAirports() {
@@ -97,12 +104,84 @@ async function drawOwnedAirports() {
 
 async function nextTurn() {
     try {
-        const response = await fetch({method: "POST"}, api + "/game/nextTurn/" + getCookie("id"));
+        const response = await fetch(api + "/game/nextTurn/" + getCookie("id"), {method: "POST"});
 
         if (!response.ok) {
             throw new Error(`HTTP Error: ${response.status}`);
         } else {
             console.log("Next turn")
+        }
+
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
+}
+
+async function buyAirplane(airplane_id) {
+    try {
+        const response = await fetch(api + "/airplanes/buy/" + airplane_id + "/" + getCookie("id"), {method: "POST"});
+
+        if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
+        }
+
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
+}
+
+async function populateStoreLists() {
+    try {
+        // Jos rahat loppuu lol
+        //await fetch(api + "/balance/add/100000/" + getCookie("id"), {method: "POST"});
+        const availablePlanesResponse = await fetch(api + "/airplanes/getAvailable/" + getCookie("id"));
+        const ownedPlanesResponse = await fetch(api + "/airplanes/getOwned/" + getCookie("id"));
+
+        if (!availablePlanesResponse.ok) {
+            throw new Error(`HTTP Error: ${availablePlanesResponse.status}`);
+        }
+        if (!ownedPlanesResponse.ok) {
+            throw new Error(`HTTP Error: ${ownedPlanesResponse.status}`);
+        }
+
+        const availablePlanesJson = await availablePlanesResponse.json();
+        const ownedPlanesJson = await ownedPlanesResponse.json();
+        console.log(availablePlanesJson);
+        console.log(ownedPlanesJson);
+
+        var forSaleList = document.getElementById("airplanes-for-sale");
+        var ownedList = document.getElementById("airplanes-owned");
+        
+        // Clearataan listat ennen kun luodaan uudet itemit
+        while (forSaleList.firstChild) {
+            forSaleList.removeChild(forSaleList.lastChild)
+        }
+        while (ownedList.firstChild) {
+            ownedList.removeChild(ownedList.lastChild)
+        }
+
+        for (var i = 0; i < availablePlanesJson.length; i++){
+            let item = document.createElement("li");
+            item.classList.add("airplane-for-sale");
+            let content = document.createTextNode(availablePlanesJson[i][0]);
+            item.appendChild(content);
+            forSaleList.appendChild(item);
+        }
+
+        for (var i = 0; i < ownedPlanesJson.length; i++) {
+            let item = document.createElement("li");
+            let content = document.createTextNode(ownedPlanesJson[i][0]);
+            item.appendChild(content);
+            ownedList.appendChild(item);
+        }
+
+        var airplanesForSale = document.getElementsByClassName("airplane-for-sale");
+        for (var i = 0; i < airplanesForSale.length; i++) {
+            airplanesForSale[i].addEventListener("click", function (event) {
+                // FIXME: ei pitäis innerTextin perusteella ostaa koneita, mut tarpeeks hyvä nyt
+                buyAirplane(event.target.innerText)
+                populateStoreLists()
+            })
         }
 
     } catch (error) {
@@ -122,12 +201,4 @@ function getCookie(name) {
 initial_draw()
 updateCounters()
 drawOwnedAirports()
-
-
-
-
-
-
-
-
-
+populateStoreLists()
