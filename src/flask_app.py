@@ -1,55 +1,94 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, Response
 from flask_cors import CORS, cross_origin
 from state import GameState
+from transaction import TransactionManager
 
 app = Flask(__name__)
 cors = CORS(app)
 
-state = GameState()
+trmg = TransactionManager()
 
-
+@app.before_request
+def middleware():
+    if request.endpoint in ['exempt_route']:
+        return
+    print(request.view_args)
+    if not request.view_args or 'id' not in request.view_args:
+        return jsonify({"error": "missing required argument [id]"}), 400
 
 # Endpoint front-endista suoritettavalle loginille, palauttaa gamestaten
-@app.route("/login/<username>", methods=["POST"])
+@app.route("/login/<username>", methods=["POST"], endpoint='exempt_route')
 @cross_origin()
-def login(login_name: str):
-    return state.init_game(login_name)
+def login(username: str):
+    if not trmg.check_game_exists(username):
+        trmg.create_game(username)
+    return trmg.get_game_id(username), 200
 
 
 
-@app.route("/airports/getAll", methods=["GET"])
+# funktio palauttaa niin ison listan et selain jäätyy
+
+# @app.route("/airports/getAll", methods=["GET"])
+# @cross_origin()
+# def get_all_airports():
+#     return jsonify(state.get_all_airports())
+
+
+
+@app.route("/balance/get/<id>", methods=["GET"])
 @cross_origin()
-def get_all_airports():
-    return jsonify(state.get_all_airports())
-
-@app.route("/airports/getOwned", methods=["GET"])
-@cross_origin()
-def get_owned_airports():
-    return jsonify(state.get_owned_airports())
-
-
-
-@app.route("/balance/get", methods=["GET"])
-@cross_origin()
-def get_balance():
-    return jsonify(state.get_balance())
+def get_balance(id):
+    return jsonify(trmg.get_balance(id)), 200
 
 @app.route("/balance/add/<int:amount>", methods=["POST"])
 @cross_origin()
 def add_balance(amount: int):
-    state.add_balance(amount)
+    trmg.add_balance(request.headers.get("id"), amount)
+    return Response('', status=200)
 
 @app.route("/balance/subtract/<int:amount>", methods=["POST"])
 @cross_origin()
 def subtract_balance(amount: int):
-    state.subtract_balance(amount)
+    trmg.subtract_balance(request.headers.get("id"), amount)
+    return Response('', status=200)
 
 
 
 @app.route("/player/getScreenName", methods=["GET"])
 @cross_origin()
 def get_screen_name():
-    return jsonify(state.get_screen_name())
+    return jsonify(trmg.get_username(request.headers.get("id"))), 200
+
+
+
+@app.route("/airplanes/create/<int:amount>", methods=["POST"])
+@cross_origin()
+def create_airplanes(amount: int):
+    trmg.create_airplanes(request.headers.get("id"), amount)
+    return Response('', status=200)
+
+@app.route("/airplanes/buy/<airplane_id>", methods=["POST"])
+@cross_origin()
+def buy_airplane(airplane_id: int):
+    trmg.buy_airplane(request.headers.get("id"), airplane_id)
+    return Response('', status=200)
+
+@app.route("/airports/buy/<airport_ident>", methods=["POST"])
+@cross_origin()
+def buy_airport(airport_ident: str):
+    trmg.buy_airport(request.headers.get("id"), airport_ident)
+    return Response('', status=200)
+
+@app.route("/airports/getOwned/", methods=["GET"])
+@cross_origin()
+def get_owned_airports():
+    return jsonify(trmg.get_owned_airports(request.headers.get("id"))), 200
+
+@app.route("/game/nextTurn", methods=["POST"])
+@cross_origin()
+def next_turn():
+    trmg.next_turn(request.headers.get("id"))
+    return Response('', status=200)
 
 
 

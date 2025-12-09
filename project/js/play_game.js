@@ -78,10 +78,25 @@ function containsBadWords(username) {
 
 // Näytetään "Logging in.." käyttäjälle ja kutsutaan login funktiota joka ottaa yhteyden backendiin
 async function handleLogin(username) {
+    const api = "http://127.0.0.1:5000/"
     loginBtn.textContent = 'Logging in..';
     loginBtn.disabled = true;
-    window.location = "play/index.html"
-    //return await login(username.trim());
+
+    response_text = NaN
+
+    await fetch(api + "login/" + username, { method: "POST" })
+    .then((response) => {
+        if (!response.ok) {
+            alert("Login failed");
+            throw new Error(`HTTP Error: ${response.status}`);
+        }
+        return response.json();  // Tää on ihan VITUN tyhmää. FUCK javascript. 
+    })
+    .then((id) => {
+        document.cookie = "id=" + id[0][0]
+        window.location = "./play/index.html"
+    });
+
 }
 
 // Haetaan endpointilta gameState eli suoritetaan varsinainen 'login' ja kommunikointi backendin kanssa
