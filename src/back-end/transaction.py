@@ -5,7 +5,6 @@ import random
 class TransactionManager:
     def __init__(self):
         self.db: Database = Database()
-        self.db.get_conn()
 
         self.list_icao = self.db.query_all("SELECT ident FROM airport;")
 
