@@ -78,7 +78,7 @@ function containsBadWords(username) {
 
 // Näytetään "Logging in.." käyttäjälle ja kutsutaan login funktiota joka ottaa yhteyden backendiin
 async function handleLogin(username) {
-    const api = "http://api.flight_game.com:8080/"
+    const api = "http://api.flight_game.com/"
     loginBtn.textContent = 'Logging in..';
     loginBtn.disabled = true;
 

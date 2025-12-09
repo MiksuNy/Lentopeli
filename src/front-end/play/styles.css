@@ -1,8 +1,18 @@
+:root {
+    --bg-color: #8A2D3B;
+    --btn-color: #BE5B50;
+    --btn-hover-bg: #FBDB93;
+    --btn-text: #FBDB93;
+    --btn-hover-text: #641B2E;
+    --btn-border: #641B2E;
+}
+
 #map { height: 85%; }
 
 html {
     overflow: hidden;
     height: 100%;
+    background-image: linear-gradient(to bottom, var(--bg-color), #973840, #a44446, #b14f4b, var(--btn-color));
 }
 
 .container {
@@ -51,10 +61,26 @@ html {
 }
 
 .button {
-    vertical-align: middle;
     padding: 10px;
-    background-color: red;
+    border: 3px solid var(--btn-border);
+    border-radius: 12px;
+    color: var(--btn-text);
+    font-size: 18px;
+    background-color: var(--btn-color);
+    transition: all 0.4s ease;
     cursor: pointer;
+    letter-spacing: 1px;
+    width: 130px;
+    height: 40px;
+    text-shadow: 1px 1px black;
+    text-align: center;
+}
+
+.button:hover {
+    color: var(--btn-hover-text);
+    background-color: var(--btn-hover-bg);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+    transform: translateY(-3px);
 }
 
 #store-button {
@@ -66,6 +92,11 @@ html {
     width: 20px;
     height: 20px;
     float: right;
+}
+
+#close-store-button:hover {
+    box-shadow: none;
+    transform: none;
 }
 
 .store {
@@ -97,4 +128,14 @@ div.scrollmenu {
     right: 0;
     position: absolute;
     z-index: 1000000000000;
+}
+
+#next-turn-button {
+    right: 10rem;
+    position: absolute;
+    z-index: 1000000000000;
+}
+
+h2 {
+    margin: 0px;
 }
