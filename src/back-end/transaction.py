@@ -67,7 +67,7 @@ class TransactionManager:
         price = self.db.query_all(f"SELECT price FROM airplane WHERE id = '{airplane_id}'")[0]
         if self.get_balance() >= price:
             self.db.execute(f"INSERT INTO owns_airplane (airplane_id, game_id) VALUES ('{airplane_id}', '{game_id}');")
-            self.subtract_balance(id, price)
+            self.subtract_balance(game_id, price)
             return True
         else:
             return False
