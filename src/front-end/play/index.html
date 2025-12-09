@@ -1,5 +1,8 @@
 <head>
 
+    <title>Flight Game</title>
+    <link rel="icon" href="../res/airplane.png">
+
     <script src="gameview.js" defer></script>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -12,6 +15,7 @@
     <script src="rotatedMarker.js"></script>
     
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
 </head>
 <html>
     <body>
@@ -45,12 +49,13 @@
                     <p id="days_amount">123</p>
                 </div>
             </div>
+
+            <div class="button" id="mutebtn">
+                <img id="mute-icon" src="../res/mute.png" width="24px" height="24px">
+            </div>
+            <div class="button" id="next-turn-button">
+                <h2>NEXT</h2>
+            </div>
         </div>    
-        <div class="button" id="mutebtn">
-            <img id="mute-icon" src="../res/mute.png" width="24px" height="24px">
-        </div>
-        <div class="button" id="next-turn-button">
-            <h2>NEXT</h2>
-        </div>
     </body>
     </html>
