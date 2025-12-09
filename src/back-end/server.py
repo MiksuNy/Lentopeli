@@ -117,6 +117,11 @@ def getPrice(airport_ident: str, id: int):
     else:
         return Response('Invalid airport ID\n', status=400)
 
+@app.route("/airplanes/getAvailable/<id>", methods=["GET"])
+@cross_origin()
+def getAvailable(id):
+    return jsonify(trmg.get_available_airplanes(id)), 200
+
 @app.route("/health", methods=["GET"], endpoint="health")
 @limiter.exempt
 @cross_origin()

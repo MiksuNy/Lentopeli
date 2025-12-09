@@ -66,6 +66,9 @@ class TransactionManager:
             return True
         else:
             return False
+    
+    def get_available_airplanes(self, id):
+        return self.db.query_all(f"SELECT * FROM airplane WHERE game_id = '{id}';")
 
     def buy_airport(self, id, airport_ident):
         if not self.validate_icao(airport_ident):
