@@ -1,4 +1,4 @@
-const api = "http://api.flight_game.com:8080"
+const api = "http://api.flight_game.com"
 
 
 var airplane_icon = L.icon({
@@ -12,6 +12,8 @@ var airport_icon = L.icon({
     popupAnchor:  [-10, -10]
 })
 var map = L.map('map').setView([51.505, -0.09], 3);
+var airplane_markers = L.layerGroup();
+var airport_markers = L.layerGroup();
 
 
 
@@ -34,6 +36,8 @@ function initial_draw() {
     })
     
     OpenTopoMap.addTo(map)
+    map.addLayer(airplane_markers);
+    map.addLayer(airport_markers);
     
     var audio = new Audio("../res/bg.wav");
     
@@ -90,6 +94,8 @@ async function drawOwnedAirplanes() {
             throw new Error(`HTTP Error: ${airplaneResponse.status}`);
         }
 
+        airplane_markers.clearLayers();
+
         const airplaneJson = await airplaneResponse.json();
         console.log(airplaneJson);
 
@@ -101,7 +107,7 @@ async function drawOwnedAirplanes() {
             const airportJson = await airportResponse.json();
             console.log(airportJson)
             
-            var marker = L.marker([airportJson[0][4], airportJson[0][5]], {icon: airplane_icon, rotationAngle: Math.random() * 360.0}).bindPopup(airplaneJson[i][3] + " " + airplaneJson[i][0]).addTo(map)
+            var marker = L.marker([airportJson[0][4], airportJson[0][5]], {icon: airplane_icon, rotationAngle: Math.random() * 360.0}).bindPopup(airplaneJson[i][3] + " " + airplaneJson[i][0]).addTo(airplane_markers)
         }
 
     } catch (error) {
@@ -121,7 +127,7 @@ async function drawOwnedAirports() {
         console.log(json);
 
         for (i = 0; i < json.length; i++){
-            var marker = L.marker([json[i][0][4], json[i][0][5]], {icon: airport_icon}).bindPopup(json[i][0][3]).addTo(map)
+            var marker = L.marker([json[i][0][4], json[i][0][5]], {icon: airport_icon}).bindPopup(json[i][0][3]).addTo(airport_markers)
         }
 
     } catch (error) {
