@@ -7,6 +7,10 @@
     --btn-border: #641B2E;
 }
 
+body {
+    height: 100%;
+}
+
 #map {
     height: 85%;
     border: 3px solid var(--btn-border);
