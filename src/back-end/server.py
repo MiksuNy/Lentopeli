@@ -83,7 +83,7 @@ def get_airport_price(airport_ident: str, id: int):
     else:
         return Response('Invalid airport ID\n', status=400)
 
-@app.route("/airports/get/<airport_ident>", methods=["GET"])
+@app.route("/airports/get/<airport_ident>", methods=["GET"], endpoint='get_airport')
 @cross_origin()
 def get_airport(airport_ident):
     return jsonify(trmg.get_airport(airport_ident)), 200
