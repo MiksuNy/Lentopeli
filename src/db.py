@@ -36,3 +36,15 @@ class Database:
             conn.commit()
         finally:
             conn.close()
+
+    def check_pool_health(self):
+        try:
+            conn = self.get_conn()
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1")
+            result = cursor.fetchone()
+            cursor.close()
+            conn.close()
+            return True
+        except Exception as e:
+            return False

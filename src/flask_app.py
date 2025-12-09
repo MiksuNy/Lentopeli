@@ -3,16 +3,24 @@ from flask_cors import CORS, cross_origin
 from state import GameState
 from transaction import TransactionManager
 import logging
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 logger = logging.getLogger('waitress')
 logger.setLevel(logging.INFO)
 
 app = Flask(__name__)
 cors = CORS(app)
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["10 per second",],
+    storage_uri="memory://",
+)
 
 trmg = TransactionManager()
 
-EXEMPT_ENDPOINTS = {'login', 'airports_random', 'ping'}
+EXEMPT_ENDPOINTS = {'login', 'airports_random', 'health'}
 
 @app.before_request
 def middleware():
@@ -110,10 +118,15 @@ def getPrice(airport_ident: str, id: int):
     else:
         return Response('Invalid airport ID\n', status=400)
 
-@app.route("/ping", methods=["GET"], endpoint="ping")
+@app.route("/health", methods=["GET"], endpoint="health")
+@limiter.exempt
 @cross_origin()
-def ping():
-    return Response('Pong\n', status=200)
+def health():
+    res = {"healthy": True, "status": {"server": True, "database": trmg.check_pool_health()}}
+    if res["status"]["database"] == False:
+        res["healthy"] = False
+        return jsonify(res), 503
+    return jsonify(res), 200
 
 
 

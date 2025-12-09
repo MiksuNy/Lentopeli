@@ -102,3 +102,6 @@ class TransactionManager:
         for _ in airplane_count:
             random_ICAO = self.db.query_all("SELECT ident FROM airport WHERE type = 'small_airport' ORDER BY RAND() LIMIT 1;")[0][0]
             self.db.execute(f"UPDATE airplane SET airport_ident = '{random_ICAO}' WHERE game_id = '{game_id}'")
+    
+    def check_pool_health(self):
+        return self.db.check_pool_health()
