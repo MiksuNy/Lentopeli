@@ -14,7 +14,7 @@ ALTER TABLE game ADD seed BINARY(64);
 
 CREATE TABLE airplane (
     id VARCHAR(40) NOT NULL,
-    game_id VARCHAR(40) NOT NULL, -- The id of the game in which this airplane can be used
+    game_id VARCHAR(40) NOT NULL,
     airport_ident VARCHAR(40),
     airplane_type VARCHAR(40) NOT NULL,
     price INT NOT NULL,

@@ -32,15 +32,19 @@ class TransactionManager:
             owned.append(self.db.query_all(f"SELECT * FROM airport WHERE ident = '{ident[0]}';"))
         return owned
     
+    def get_random_set_airports(self):
+        return self.db.query_all("SELECT * FROM airport ORDER BY RAND() LIMIT 100;")
+    
     def get_balance(self, id):
         balance = self.db.query_all(f"SELECT balance FROM game WHERE id = '{id}';")
         return balance
 
     def subtract_balance(self, id, amount):
-        self.db.query_all(f"UPDATE game SET balance = balance - {amount} WHERE id = '{id}';")
+        print(f"UPDATE game SET balance = balance - {amount} WHERE id = '{id}';")
+        self.db.execute(f"UPDATE game SET balance = balance - {amount} WHERE id = '{id}';")
     
     def add_balance(self, id, amount):
-        self.db.query_all(f"UPDATE game SET balance = balance + {amount} WHERE id = '{id}';")
+        self.db.execute(f"UPDATE game SET balance = balance + {amount} WHERE id = '{id}';")
 
     def get_username(self, id):
         username = self.db.query_all(f"SELECT screen_name FROM game WHERE id='{id}';")
@@ -55,16 +59,26 @@ class TransactionManager:
                 f"INSERT INTO airplane (id, game_id, airplane_type, price) VALUES ('{airplane_id}', '{game_id}', '{airplane_type}', {price});"
             )
 
-    def buy_airplane(self, game_id, airplane_id):
+    def buy_airplane(self, game_id, airplane_id) -> bool:
         price = self.db.query_all(f"SELECT price FROM airplane WHERE id = '{airplane_id}'")[0]
         if self.get_balance() >= price:
             self.db.execute(f"INSERT INTO owns_airplane (airplane_id, game_id) VALUES ('{airplane_id}', '{game_id}');")
-            self.subtract_balance(price)
+            self.subtract_balance(id, price)
+            return True
+        else:
+            return False
 
     def buy_airport(self, id, airport_ident):
+        seed = self.db.query_all(f"SELECT seed FROM game WHERE id='{id}';")[0][0]
+        random.seed(bytes(seed) + bytes(airport_ident, "utf-8"))
         price = 10000 + random.randint(5000, 15000)
-        if self.get_balance() >= price:
+        print(price)
+        if self.get_balance(id)[0][0] >= price:
             self.db.execute(f"INSERT INTO owns_airport (airport_ident, game_id) VALUES('{airport_ident}', '{id}');")
+            self.subtract_balance(id, price)
+            return True
+        else:
+            return False
 
     def next_turn(self, game_id):
         self.db.query_all(f"UPDATE game SET turns = turns + 1 WHERE id = '{game_id}';")
