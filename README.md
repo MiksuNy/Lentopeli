@@ -15,6 +15,42 @@ Currently implemented features include
 
 
 
+## Deployment
+
+#### Running the backend
+The backend can be run by either executing the `run_server.sh` file or by running `python3 src/server.py`
+
+#### Prerequisites
+
+To deploy this project, first apply the new schema on top of the existing database provided by the teachers.
+
+```bash
+  mysql --host="mysql_server" --user="user_name" --database="database_name" --password="user_password" < "schema.sql"
+```
+
+Next, create a file called `.env` and populate it.
+
+```bash
+cat .env.example > .env
+```
+
+And change the fields to your host, username and password.
+
+**It is recommended** to run the game behind a reverse proxy to avoid CORS- related errors.
+
+The following is an example NGINX server block for the backend.
+```
+server {
+    listen 80;
+    server_name api.flight_game.com;
+    
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+    }
+}
+```
+
+
 ## API Reference
 
 ### Player
@@ -163,42 +199,6 @@ Returns **200** if the service is healthy, **503** if it isn't.
     }
 }
 ```
-## Deployment
-
-#### Running the backend
-The backend can be run by either executing the `run_server.sh` file or by running `python3 src/server.py`
-
-#### Prerequisites
-
-To deploy this project, first apply the new schema on top of the existing database provided by the teachers.
-
-```bash
-  mysql --host="mysql_server" --user="user_name" --database="database_name" --password="user_password" < "schema.sql"
-```
-
-Next, create a file called `.env` and populate it.
-
-```bash
-cat .env.example > .env
-```
-
-And change the fields to your host, username and password.
-
-**It is recommended** to run the game behind a reverse proxy to avoid CORS- related errors.
-
-The following is an example NGINX server block for the backend.
-```
-server {
-    listen 80;
-    server_name api.flight_game.com;
-    
-    location / {
-        proxy_pass http://127.0.0.1:5000;
-    }
-}
-```
-
-
 ## Authors
 
 - [@HEPOSHEIKKI](https://www.github.com/HEPOSHEIKKI) (Otto)
