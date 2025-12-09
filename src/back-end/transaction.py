@@ -63,11 +63,11 @@ class TransactionManager:
                 f"INSERT INTO airplane (id, game_id, airplane_type, price) VALUES ('{airplane_id}', '{game_id}', '{airplane_type}', {price});"
             )
 
-    def buy_airplane(self, game_id, airplane_id) -> bool:
-        price = self.db.query_all(f"SELECT price FROM airplane WHERE id = '{airplane_id}'")[0]
-        if self.get_balance() >= price:
-            self.db.execute(f"INSERT INTO owns_airplane (airplane_id, game_id) VALUES ('{airplane_id}', '{game_id}');")
-            self.subtract_balance(game_id, price)
+    def buy_airplane(self, id, airplane_id) -> bool:
+        price = self.db.query_all(f"SELECT price FROM airplane WHERE id = '{airplane_id}';")
+        if self.get_balance(id)[0][0] >= price[0][0]:
+            self.db.execute(f"INSERT INTO owns_airplane (airplane_id, game_id) VALUES ('{airplane_id}', '{id}');")
+            self.subtract_balance(id, price[0][0])
             return True
         else:
             return False
