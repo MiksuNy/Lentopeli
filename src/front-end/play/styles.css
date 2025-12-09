@@ -153,3 +153,9 @@ div.scrollmenu {
 h2 {
     margin: 0px;
 }
+
+
+.leaflet-control-attribution {
+	display: inline !important;
+    font-size: 7px;
+}
