@@ -14,6 +14,7 @@ cors = CORS(app)
 @app.route("/login/<username>", methods=["POST"])
 @cross_origin()
 
+
 def login(username: str):
     state = welcome_screen(username)
     return jsonify(state)
