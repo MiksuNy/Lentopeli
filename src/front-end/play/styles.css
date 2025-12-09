@@ -50,10 +50,14 @@ html {
 .counter {
     vertical-align: middle;
     padding: 10px;
-    background-color: yellow;
+    color: var(--btn-hover-text);
+    background-color: var(--btn-hover-bg);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+    transform: translateY(-3px);
     margin-right: 10px;
     width: 15%;
     height: 100%;
+    border: 3px solid var(--btn-border);
 }
 
 .counter h2{
