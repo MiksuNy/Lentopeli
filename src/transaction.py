@@ -7,6 +7,8 @@ class TransactionManager:
         self.db: Database = Database()
         self.db.get_conn()
 
+        self.list_icao = self.db.query_all("SELECT ident FROM airport;")
+
     def check_game_exists(self, username) -> bool:
         exists = bool(self.db.query_all(f"SELECT id FROM game WHERE screen_name = '{username}';"))
         return exists
@@ -26,9 +28,7 @@ class TransactionManager:
     def get_owned_airports(self, id):
         owned = []
         res = self.db.query_all(f"SELECT airport_ident FROM owns_airport WHERE game_id = '{id}';")
-        print(f"SELECT airport_ident FROM owns_airport WHERE game_id = '{id}';")
         for ident in res:
-            print(f"SELECT * FROM airport WHERE ident = '{ident[0]}';")
             owned.append(self.db.query_all(f"SELECT * FROM airport WHERE ident = '{ident[0]}';"))
         return owned
     
@@ -40,7 +40,6 @@ class TransactionManager:
         return balance
 
     def subtract_balance(self, id, amount):
-        print(f"UPDATE game SET balance = balance - {amount} WHERE id = '{id}';")
         self.db.execute(f"UPDATE game SET balance = balance - {amount} WHERE id = '{id}';")
     
     def add_balance(self, id, amount):
@@ -69,16 +68,32 @@ class TransactionManager:
             return False
 
     def buy_airport(self, id, airport_ident):
+        if not self.validate_icao(airport_ident):
+            return False
         seed = self.db.query_all(f"SELECT seed FROM game WHERE id='{id}';")[0][0]
         random.seed(bytes(seed) + bytes(airport_ident, "utf-8"))
         price = 10000 + random.randint(5000, 15000)
-        print(price)
         if self.get_balance(id)[0][0] >= price:
             self.db.execute(f"INSERT INTO owns_airport (airport_ident, game_id) VALUES('{airport_ident}', '{id}');")
             self.subtract_balance(id, price)
             return True
         else:
             return False
+    
+    def get_airport_price(self, id, airport_ident):
+        if not self.validate_icao(airport_ident):
+            return False
+        seed = self.db.query_all(f"SELECT seed FROM game WHERE id='{id}';")[0][0]
+        random.seed(bytes(seed) + bytes(airport_ident, "utf-8"))
+        price = 10000 + random.randint(5000, 15000)
+        return price
+
+    def validate_icao(self, icao) -> bool:
+        if len(icao) != 4:
+            return False
+        if (icao,) not in self.list_icao:
+            return False
+        return True
 
     def next_turn(self, game_id):
         self.db.query_all(f"UPDATE game SET turns = turns + 1 WHERE id = '{game_id}';")

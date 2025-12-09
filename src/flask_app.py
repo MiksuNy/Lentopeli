@@ -2,22 +2,28 @@ from flask import Flask, jsonify, request, Response
 from flask_cors import CORS, cross_origin
 from state import GameState
 from transaction import TransactionManager
+import logging
+
+logger = logging.getLogger('waitress')
+logger.setLevel(logging.INFO)
 
 app = Flask(__name__)
 cors = CORS(app)
 
 trmg = TransactionManager()
 
-EXEMPT_ENDPOINTS = {'login', 'airports_random'}
+EXEMPT_ENDPOINTS = {'login', 'airports_random', 'ping'}
 
 @app.before_request
 def middleware():
     if request.endpoint in EXEMPT_ENDPOINTS:
         return
     if not request.view_args or 'id' not in request.view_args:
-        return jsonify({"error": "missing required argument [id]"}), 400
+        return Response("Missing required argument [id]\n", status=400)
 
-# Endpoint front-endista suoritettavalle loginille, palauttaa gamestaten
+
+
+
 @app.route("/login/<username>", methods=["POST"], endpoint='login')
 @cross_origin()
 def login(username: str):
@@ -96,7 +102,21 @@ def next_turn(id: int):
     trmg.next_turn(id)
     return Response('', status=200)
 
+@app.route("/airports/getPrice/<airport_ident>/<id>", methods=["GET"])
+@cross_origin()
+def getPrice(airport_ident: str, id: int):
+    if (price := trmg.get_airport_price(id, airport_ident)):
+        return jsonify(price), 200
+    else:
+        return Response('Invalid airport ID\n', status=400)
+
+@app.route("/ping", methods=["GET"], endpoint="ping")
+@cross_origin()
+def ping():
+    return Response('Pong\n', status=200)
+
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=5000)
