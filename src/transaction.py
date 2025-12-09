@@ -47,7 +47,7 @@ class TransactionManager:
         return username
     
     def create_airplanes(self, game_id, amount):
-        for i in amount:
+        for _ in amount:
             airplane_id = int(self.db.query_all("SELECT id FROM airplane ORDER BY CAST(id AS UNSIGNED) DESC LIMIT 1;")[0][0]) + 1
             airplane_type = random.choice(list(AirplaneType))
             price = random.randint(500, 1500)
@@ -60,6 +60,11 @@ class TransactionManager:
         if self.get_balance() >= price:
             self.db.execute(f"INSERT INTO owns_airplane (airplane_id, game_id) VALUES ('{airplane_id}', '{game_id}');")
             self.subtract_balance(price)
+
+    def buy_airport(self, id, airport_ident):
+        price = 10000 + random.randint(5000, 15000)
+        if self.get_balance() >= price:
+            self.db.execute(f"INSERT INTO owns_airport (airport_ident, game_id) VALUES('{airport_ident}', '{id}');")
 
     def next_turn(self, game_id):
         self.db.query_all(f"UPDATE game SET turns = turns + 1 WHERE id = '{game_id}';")

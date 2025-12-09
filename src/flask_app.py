@@ -33,11 +33,6 @@ def login(username: str):
 # def get_all_airports():
 #     return jsonify(state.get_all_airports())
 
-@app.route("/airports/getOwned/<id>", methods=["GET"])
-@cross_origin()
-def get_owned_airports(id):
-    return jsonify(trmg.get_owned_airports(id)), 200
-
 
 
 @app.route("/balance/get/<id>", methods=["GET"])
@@ -66,17 +61,28 @@ def get_screen_name():
 
 
 
-@app.route("/game/createAirplanes/<int:amount>", methods=["POST"])
+@app.route("/airplanes/create/<int:amount>", methods=["POST"])
 @cross_origin()
 def create_airplanes(amount: int):
     trmg.create_airplanes(request.headers.get("id"), amount)
     return Response('', status=200)
 
-@app.route("/game/buyAirplane/<airplane_id>", methods=["POST"])
+@app.route("/airplanes/buy/<airplane_id>", methods=["POST"])
 @cross_origin()
 def buy_airplane(airplane_id: int):
     trmg.buy_airplane(request.headers.get("id"), airplane_id)
     return Response('', status=200)
+
+@app.route("/airports/buy/<airport_ident>", methods=["POST"])
+@cross_origin()
+def buy_airport(airport_ident: str):
+    trmg.buy_airport(request.headers.get("id"), airport_ident)
+    return Response('', status=200)
+
+@app.route("/airports/getOwned/", methods=["GET"])
+@cross_origin()
+def get_owned_airports():
+    return jsonify(trmg.get_owned_airports(request.headers.get("id"))), 200
 
 @app.route("/game/nextTurn", methods=["POST"])
 @cross_origin()
