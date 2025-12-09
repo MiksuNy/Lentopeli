@@ -1,4 +1,4 @@
-const api = "http://127.0.0.1:5000"
+const api = "http://api.flight_game.com:8080"
 
 
 var airplane_icon = L.icon({
@@ -16,8 +16,6 @@ var map = L.map('map').setView([51.505, -0.09], 3);
 
 
 function initial_draw() {
-    
-    
     document.getElementById("store-button").addEventListener("click", function (event) {
         document.getElementsByClassName("store")[0].style.display = "block"
     })
@@ -26,7 +24,9 @@ function initial_draw() {
         document.getElementsByClassName("store")[0].style.display = "none"
     })
     
-    
+    document.getElementById("next-turn-button").addEventListener("click", function(event) {
+        nextTurn()
+    })
     
     var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
         maxZoom: 17,
@@ -76,9 +76,6 @@ async function updateCounters(){
 }
 
 async function drawOwnedAirports() {
-
-
-
     try {
         const response = await fetch(api + "/airports/getOwned/" + getCookie("id"));
 
@@ -93,6 +90,20 @@ async function drawOwnedAirports() {
             var marker = L.marker([json[i][0][4], json[i][0][5]], {icon: airport_icon}).bindPopup(json[i][0][3]).addTo(map)
         }
 
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
+}
+
+async function nextTurn() {
+    try {
+        const response = await fetch({method: "POST"}, api + "/game/nextTurn/" + getCookie("id"));
+
+        if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
+        } else {
+            console.log("Next turn")
+        }
 
     } catch (error) {
         console.error("Fetch error:", error);
