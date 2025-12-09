@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request, Response
 from flask_cors import CORS, cross_origin
-from state import GameState
 from transaction import TransactionManager
 import logging
 from flask_limiter import Limiter
