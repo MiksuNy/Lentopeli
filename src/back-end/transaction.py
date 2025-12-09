@@ -42,10 +42,10 @@ class TransactionManager:
         return balance
 
     def subtract_balance(self, id, amount):
-        self.db.execute(f"UPDATE game SET balance = balance - {amount} WHERE id = '{id}';")
+        self.db.execute(f"UPDATE game SET balance = balance - {amount[0]} WHERE id = '{id}';")
     
     def add_balance(self, id, amount):
-        self.db.execute(f"UPDATE game SET balance = balance + {amount} WHERE id = '{id}';")
+        self.db.execute(f"UPDATE game SET balance = balance + {amount[0]} WHERE id = '{id}';")
 
     def get_username(self, id):
         username = self.db.query_all(f"SELECT screen_name FROM game WHERE id='{id}';")
@@ -63,10 +63,10 @@ class TransactionManager:
                 f"INSERT INTO airplane (id, game_id, airplane_type, price) VALUES ('{airplane_id}', '{game_id}', '{airplane_type}', {price});"
             )
 
-    def buy_airplane(self, game_id, airplane_id) -> bool:
-        price = self.db.query_all(f"SELECT price FROM airplane WHERE id = '{airplane_id}'")[0]
-        if self.get_balance() >= price:
-            self.db.execute(f"INSERT INTO owns_airplane (airplane_id, game_id) VALUES ('{airplane_id}', '{game_id}');")
+    def buy_airplane(self, id, airplane_id) -> bool:
+        price = self.db.query_all(f"SELECT price FROM airplane WHERE id = '{airplane_id}';")[0]
+        if self.get_balance(id)[0][0] >= price[0]:
+            self.db.execute(f"INSERT INTO owns_airplane (airplane_id, game_id) VALUES ('{airplane_id}', '{id}');")
             self.subtract_balance(id, price)
             return True
         else:
@@ -81,7 +81,7 @@ class TransactionManager:
     def buy_airport(self, id, airport_ident):
         if not self.validate_icao(airport_ident):
             return False
-        seed = self.db.query_all(f"SELECT seed FROM game WHERE id='{id}';")[0][0]
+        seed = self.db.query_all(f"SELECT seed FROM game WHERE id='{id[0][0]}';")[0][0]
         random.seed(bytes(seed) + bytes(airport_ident, "utf-8"))
         price = 10000 + random.randint(5000, 15000)
         if self.get_balance(id)[0][0] >= price:
