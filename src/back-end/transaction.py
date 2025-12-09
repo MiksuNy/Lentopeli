@@ -104,7 +104,7 @@ class TransactionManager:
         return True
 
     def next_turn(self, game_id):
-        self.db.query_all(f"UPDATE game SET turns = turns + 1 WHERE id = '{game_id}';")
+        self.db.execute(f"UPDATE game SET turns = turns + 1 WHERE id = '{game_id}';")
 
         airplane_count = self.db.query_all(f"SELECT COUNT(*) FROM owns_airplane WHERE game_id = '{game_id}'")[0]
         for _ in airplane_count:
