@@ -123,6 +123,13 @@ async function login(username) {
 
 // Määritellään kuuntelijat buttoneille ja inputille
 function addListeners() {
+    window.addEventListener("pageshow", (evt) => {
+        if (evt.persisted) {
+            loginBtn.textContent = 'Login';
+            loginBtn.disabled = false;
+            form.reset()
+        }
+    })
     quitGameBtn.addEventListener('click', () => window.close());
     playGameBtn.addEventListener('click',
         () => startViewWithTransition(loginPageElmnt));
