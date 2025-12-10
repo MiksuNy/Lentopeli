@@ -173,8 +173,9 @@ async function populateStoreLists() {
     try {
         // Jos rahat loppuu lol
         //await fetch(api + "/balance/add/100000/" + getCookie("id"), {method: "POST"});
-        const availablePlanesResponse = await fetch(api + "/airplanes/getAvailable/" + getCookie("id"));
+        await wait(10)
         const ownedPlanesResponse = await fetch(api + "/airplanes/getOwned/" + getCookie("id"));
+        const availablePlanesResponse = await fetch(api + "/airplanes/getAvailable/" + getCookie("id"));
 
         if (!availablePlanesResponse.ok) {
             throw new Error(`HTTP Error: ${availablePlanesResponse.status}`);
@@ -182,9 +183,8 @@ async function populateStoreLists() {
         if (!ownedPlanesResponse.ok) {
             throw new Error(`HTTP Error: ${ownedPlanesResponse.status}`);
         }
-
-        const availablePlanesJson = await availablePlanesResponse.json();
         const ownedPlanesJson = await ownedPlanesResponse.json();
+        const availablePlanesJson = await availablePlanesResponse.json();
         console.log(availablePlanesJson);
         console.log(ownedPlanesJson);
 
@@ -236,6 +236,10 @@ function getCookie(name) {
     if (parts.length === 2) {
         return parts.pop().split(';').shift();
     }
+}
+
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 initial_draw()

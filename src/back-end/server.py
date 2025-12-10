@@ -13,7 +13,7 @@ cors = CORS(app)
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits=["10 per second",],
+    default_limits=["30 per second",],
     storage_uri="memory://",
 )
 
