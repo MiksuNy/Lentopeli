@@ -31,7 +31,7 @@ def middleware():
 
 
 
-@app.route("/login/<username>", methods=["POST"], endpoint='login')
+@app.route("/v1/login/<username>", methods=["POST"], endpoint='login')
 @cross_origin()
 def login(username: str):
     if not trmg.check_game_exists(username):
@@ -39,29 +39,29 @@ def login(username: str):
     return trmg.get_game_id(username), 200
 
 
-@app.route("/player/getScreenName/<id>", methods=["GET"])
+@app.route("/v1/player/getScreenName/<id>", methods=["GET"])
 @cross_origin()
 def get_screen_name(id: int):
     return jsonify(trmg.get_username(id)), 200
 
-@app.route("/game/nextTurn/<id>", methods=["POST"])
+@app.route("/v1/game/nextTurn/<id>", methods=["POST"])
 @cross_origin()
 def next_turn(id: int):
     trmg.next_turn(id)
     return Response('', status=200)
 
-@app.route("/game/getCompletedTurns/<id>", methods=["GET"])
+@app.route("/v1/game/getCompletedTurns/<id>", methods=["GET"])
 @cross_origin()
 def get_completed_turns(id):
     return jsonify(trmg.get_completed_turns(id)), 200
 
 
-@app.route("/airports/getRandomSet", methods=["GET"], endpoint='airports_random')
+@app.route("/v1/airports/getRandomSet", methods=["GET"], endpoint='airports_random')
 @cross_origin()
 def get_all_airports():
     return jsonify(trmg.get_random_set_airports()), 200
 
-@app.route("/airports/buy/<airport_ident>/<id>", methods=["POST"])
+@app.route("/v1/airports/buy/<airport_ident>/<id>", methods=["POST"])
 @cross_origin()
 def buy_airport(airport_ident: str, id: int):
     if trmg.buy_airport(id, airport_ident):
@@ -69,7 +69,7 @@ def buy_airport(airport_ident: str, id: int):
     else:
         return Response('Insufficient funds or bad airport ID\n', status=403)
 
-@app.route("/airports/getOwned/<id>", methods=["GET"])
+@app.route("/v1/airports/getOwned/<id>", methods=["GET"])
 @cross_origin()
 def get_owned_airports(id: int):
     return jsonify(trmg.get_owned_airports(id)), 200
@@ -82,25 +82,25 @@ def get_airport_price(airport_ident: str, id: int):
     else:
         return Response('Invalid airport ID\n', status=400)
 
-@app.route("/airports/get/<airport_ident>", methods=["GET"], endpoint='get_airport')
+@app.route("/v1/airports/get/<airport_ident>", methods=["GET"], endpoint='get_airport')
 @cross_origin()
 def get_airport(airport_ident):
     return jsonify(trmg.get_airport(airport_ident)), 200
 
 
 
-@app.route("/balance/get/<id>", methods=["GET"])
+@app.route("/v1/balance/get/<id>", methods=["GET"])
 @cross_origin()
 def get_balance(id: int):
     return jsonify(trmg.get_balance(id)), 200
 
-@app.route("/balance/add/<int:amount>/<id>", methods=["POST"])
+@app.route("/v1/balance/add/<int:amount>/<id>", methods=["POST"])
 @cross_origin()
 def add_balance(amount: int, id: int):
     trmg.add_balance(id, amount)
     return Response('', status=200)
 
-@app.route("/balance/subtract/<int:amount>/<id>", methods=["POST"])
+@app.route("/v1/balance/subtract/<int:amount>/<id>", methods=["POST"])
 @cross_origin()
 def subtract_balance(amount: int, id: int):
     trmg.subtract_balance(id, amount)
@@ -111,13 +111,13 @@ def subtract_balance(amount: int, id: int):
 
 
 
-@app.route("/airplanes/create/<int:amount>/<id>", methods=["POST"])
+@app.route("/v1/airplanes/create/<int:amount>/<id>", methods=["POST"])
 @cross_origin()
 def create_airplanes(amount: int, id: int):
     trmg.create_airplanes(id, amount)
     return Response('', status=200)
 
-@app.route("/airplanes/buy/<airplane_id>/<id>", methods=["POST"])
+@app.route("/v1/airplanes/buy/<airplane_id>/<id>", methods=["POST"])
 @cross_origin()
 def buy_airplane(airplane_id: int, id: int):
     if trmg.buy_airplane(id, airplane_id):
@@ -125,12 +125,12 @@ def buy_airplane(airplane_id: int, id: int):
     else:
         return Response('Insufficient funds or bad airplane ID\n', status=403)
         
-@app.route("/airplanes/getAvailable/<id>", methods=["GET"])
+@app.route("/v1/airplanes/getAvailable/<id>", methods=["GET"])
 @cross_origin()
 def getAvailable(id):
     return jsonify(trmg.get_available_airplanes(id)), 200
 
-@app.route("/airplanes/getOwned/<id>", methods=["GET"])
+@app.route("/v1/airplanes/getOwned/<id>", methods=["GET"])
 @cross_origin()
 def get_owned_airplanes(id: int):
     return jsonify(trmg.get_owned_airplanes(id)), 200
@@ -140,7 +140,7 @@ def get_owned_airplanes(id: int):
 
 
 
-@app.route("/health", methods=["GET"], endpoint="health")
+@app.route("/v1/health", methods=["GET"], endpoint="health")
 @limiter.exempt
 @cross_origin()
 def health():
