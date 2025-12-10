@@ -58,7 +58,7 @@ server {
 #### Log in
 
 ```http
-  POST /login/${username}
+  POST /v1/login/${username}
 ```
 
 | Parameter | Type     | Description                |
@@ -70,7 +70,7 @@ Logs in as a specific user. Returns a `user_id`
 #### Get username
 
 ```http
-  GET /player/getScreenName/${user_id}
+  GET /v1/player/getScreenName/${user_id}
 ```
 
 | Parameter | Type     | Description                       |
@@ -84,7 +84,7 @@ Gets the username of the user associated with the user ID.
 #### Next turn
 
 ```http
-  POST /game/nextTurn/${user_id}
+  POST /v1/game/nextTurn/${user_id}
 ```
 
 | Parameter | Type     | Description                       |
@@ -98,7 +98,7 @@ Complete a turn for the user associated with the user ID.
 #### Get random set
 
 ```http
-  GET /airports/getRandomSet
+  GET /v1/airports/getRandomSet
 ```
 
 Get a random set on 100 airports. Used to populate the in-game store.
@@ -106,7 +106,7 @@ Get a random set on 100 airports. Used to populate the in-game store.
 #### Get owned
 
 ```http
-  GET /airports/getOwned/${user_id}
+  GET /v1/airports/getOwned/${user_id}
 ```
 
 | Parameter | Type     | Description                       |
@@ -119,7 +119,7 @@ Returns a list of all the owned airports for the user associated with the user I
 #### Buy airport
 
 ```http
-  POST /airports/buy/${airport_ident}/${user_id}
+  POST /v1/airports/buy/${airport_ident}/${user_id}
 ```
 
 | Parameter | Type     | Description                       |
@@ -133,7 +133,7 @@ Returns **200** on success, **403** on insufficient funds or an invalid ICAO cod
 #### Get airport price
 
 ```http
-  GET /airports/getPrice/${airport_ident}/${user_id}
+  GET /v1/airports/getPrice/${airport_ident}/${user_id}
 ```
 
 | Parameter | Type     | Description                       |
@@ -150,7 +150,7 @@ Returns **200** on success, **403** for an invalid ICAO code.
 #### Create airplanes
 
 ```http
-  POST /airplanes/create/${amount}/${user_id}
+  POST /v1/airplanes/create/${amount}/${user_id}
 ```
 
 | Parameter | Type     | Description                       |
@@ -165,7 +165,7 @@ Called when a new game is registered into the database. Used to populate the in-
 #### Buy airplane
 
 ```http
-  POST /airplanes/buy/${airplane_id}/${user_id}
+  POST /v1/airplanes/buy/${airplane_id}/${user_id}
 ```
 
 | Parameter | Type     | Description                       |
@@ -182,7 +182,7 @@ Returns **200** on success, **403** on insufficient funds or an invalid airplane
 #### Health check
 
 ```http
-  GET /health
+  GET /v1/health
 ```
 
 Returns a JSON object about the service health.

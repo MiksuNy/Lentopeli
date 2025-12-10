@@ -78,7 +78,7 @@ function containsBadWords(username) {
 
 // Näytetään "Logging in.." käyttäjälle ja kutsutaan login funktiota joka ottaa yhteyden backendiin
 async function handleLogin(username) {
-    const api = "http://127.0.0.1:5000/"
+    const api = "http://api.flight_game.com/v1/"
     loginBtn.textContent = 'Logging in..';
     loginBtn.disabled = true;
 
@@ -171,4 +171,11 @@ function playGameMain() {
     addListeners();
 }
 
+function testBrowserCompat() {
+    if (typeof document.startViewTransition == "undefined") { 
+        document.getElementsByTagName("body")[0].innerHTML = "<h1>Your browser version is not supported</h1>"
+    }
+}
+
 playGameMain();
+testBrowserCompat();

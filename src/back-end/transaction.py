@@ -42,10 +42,10 @@ class TransactionManager:
         return balance
 
     def subtract_balance(self, id, amount):
-        self.db.execute(f"UPDATE game SET balance = balance - {amount} WHERE id = '{id}';")
+        self.db.execute(f"UPDATE game SET balance = balance - {amount[0]} WHERE id = '{id}';")
     
     def add_balance(self, id, amount):
-        self.db.execute(f"UPDATE game SET balance = balance + {amount} WHERE id = '{id}';")
+        self.db.execute(f"UPDATE game SET balance = balance + {amount[0]} WHERE id = '{id}';")
 
     def get_username(self, id):
         username = self.db.query_all(f"SELECT screen_name FROM game WHERE id='{id}';")
@@ -64,16 +64,16 @@ class TransactionManager:
             )
 
     def buy_airplane(self, id, airplane_id) -> bool:
-        price = self.db.query_all(f"SELECT price FROM airplane WHERE id = '{airplane_id}';")
-        if self.get_balance(id)[0][0] >= price[0][0]:
+        price = self.db.query_all(f"SELECT price FROM airplane WHERE id = '{airplane_id}';")[0]
+        if self.get_balance(id)[0][0] >= price[0]:
             self.db.execute(f"INSERT INTO owns_airplane (airplane_id, game_id) VALUES ('{airplane_id}', '{id}');")
-            self.subtract_balance(id, price[0][0])
+            self.subtract_balance(id, price)
             return True
         else:
             return False
     
     def get_available_airplanes(self, id):
-        return self.db.query_all(f"SELECT * FROM airplane a WHERE NOT EXISTS (SELECT 1 FROM owns_airplane o WHERE o.airplane_id = a.id AND o.game_id = {id});")
+        return self.db.query_all(f"SELECT * FROM airplane a WHERE NOT EXISTS (SELECT 1 FROM owns_airplane o WHERE o.airplane_id = a.id AND o.game_id = '{id}') AND game_id = '{id}';")
     
     def get_owned_airplanes(self, id):
         return self.db.query_all(f"SELECT a.* FROM airplane AS a JOIN owns_airplane AS o ON a.id = o.airplane_id WHERE o.game_id = '{id}';")
@@ -81,7 +81,7 @@ class TransactionManager:
     def buy_airport(self, id, airport_ident):
         if not self.validate_icao(airport_ident):
             return False
-        seed = self.db.query_all(f"SELECT seed FROM game WHERE id='{id}';")[0][0]
+        seed = self.db.query_all(f"SELECT seed FROM game WHERE id='{id[0][0]}';")[0][0]
         random.seed(bytes(seed) + bytes(airport_ident, "utf-8"))
         price = 10000 + random.randint(5000, 15000)
         if self.get_balance(id)[0][0] >= price:
@@ -99,6 +99,9 @@ class TransactionManager:
         price = 10000 + random.randint(5000, 15000)
         return price
 
+    def get_airport(self, icao):
+        return self.db.query_all(f"SELECT * FROM airport WHERE ident='{icao}';")
+
     def validate_icao(self, icao) -> bool:
         if len(icao) != 4:
             return False
@@ -107,12 +110,12 @@ class TransactionManager:
         return True
 
     def next_turn(self, game_id):
-        self.db.execute(f"UPDATE game SET turns = turns + 1 WHERE id = '{game_id}';")
+        airplanes = self.db.query_all(f"SELECT airplane_id FROM owns_airplane WHERE game_id = '{game_id}'")
 
-        airplane_count = self.db.query_all(f"SELECT COUNT(*) FROM owns_airplane WHERE game_id = '{game_id}'")[0]
-        for _ in airplane_count:
+        self.db.execute(f"UPDATE game SET turns = turns + 1 WHERE id = '{game_id}';")
+        for i in range(len(airplanes)):
             random_ICAO = self.db.query_all("SELECT ident FROM airport WHERE type = 'small_airport' ORDER BY RAND() LIMIT 1;")[0][0]
-            self.db.execute(f"UPDATE airplane SET airport_ident = '{random_ICAO}' WHERE game_id = '{game_id}'")
+            self.db.execute(f"UPDATE airplane SET airport_ident = '{random_ICAO}' WHERE id = '{airplanes[i][0]}';")
     
     def check_pool_health(self):
         return self.db.check_pool_health()

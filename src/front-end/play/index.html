@@ -1,4 +1,9 @@
+<!DOCTYPE html>
+
 <head>
+
+    <title>Flight Game</title>
+    <link rel="icon" href="../res/airplane.png">
 
     <script src="gameview.js" defer></script>
     
@@ -12,6 +17,7 @@
     <script src="rotatedMarker.js"></script>
     
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
 </head>
 <html>
     <body>
@@ -23,8 +29,12 @@
                 <h2 class="scrollmenu-title">OWNED AIRPLANES</h2>
             </div>
             <div class="container" id="scrollmenus">
-                <div class="scrollmenu"></div>
-                <div class="scrollmenu"></div>
+                <div class="scrollmenu">
+                    <ul id="airplanes-for-sale"></ul>
+                </div>
+                <div class="scrollmenu">
+                    <ul id="airplanes-owned"></ul>
+                </div>
             </div>
             
         </div>
@@ -45,9 +55,13 @@
                     <p id="days_amount">123</p>
                 </div>
             </div>
+
+            <div class="button" id="mutebtn">
+                <img id="mute-icon" src="../res/mute.png" width="24px" height="24px">
+            </div>
+            <div class="button" id="next-turn-button">
+                <h2>NEXT</h2>
+            </div>
         </div>    
-        <div class="button" id="mutebtn">
-            <img id="mute-icon" src="../res/mute.png" width="24px" height="24px">
-        </div>
     </body>
     </html>
