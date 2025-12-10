@@ -125,7 +125,7 @@ html {
 }
 
 div.scrollmenu {
-    background-color: rgb(49, 141, 141);
+    background-color: var(--bg-color);
     overflow: auto;
     white-space: nowrap;
     margin: 4px 3px;
@@ -169,17 +169,18 @@ h2 {
     list-style-type: none;
     padding: 0;
     margin: 0;
-    background-color: aqua;
 }
 
 .scrollmenu ul li {
     width: 100%;
     height: 32px;
-    background-color: aquamarine;
+    color: var(--btn-text)
+    background-color: var(--btn-color);
 }
 
 .scrollmenu ul li:hover {
     width: 100%;
     height: 32px;
-    background-color: rgb(86, 166, 139);
+    color: var(--btn-hover-text);
+    background-color: var(--btn-hover-bg);
 }
