@@ -59,7 +59,6 @@ def get_completed_turns(id):
 @app.route("/airports/getRandomSet", methods=["GET"], endpoint='airports_random')
 @cross_origin()
 def get_all_airports():
-    print(trmg.get_random_set_airports())
     return jsonify(trmg.get_random_set_airports()), 200
 
 @app.route("/airports/buy/<airport_ident>/<id>", methods=["POST"])

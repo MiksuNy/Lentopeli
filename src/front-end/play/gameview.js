@@ -55,12 +55,6 @@ function initial_draw() {
 
 }
 
-
-
-function clickedAirport(e) {
-    console.log(e)
-}
-
 async function updateCounters(){
     await fetch(api + "/balance/get/" + getCookie("id"))
     .then((response) => {
@@ -70,7 +64,6 @@ async function updateCounters(){
         return response.json()
     })
     .then((res) => {
-        console.log(res)
         document.getElementById("money_amount").innerText = res
     })
     await fetch(api + "/game/getCompletedTurns/" + getCookie("id"))
@@ -81,7 +74,6 @@ async function updateCounters(){
         return response.json()
     })
     .then((res) => {
-        console.log(res)
         document.getElementById("days_amount").innerText = res
     })
 }
@@ -97,7 +89,6 @@ async function drawOwnedAirplanes() {
         airplane_markers.clearLayers();
 
         const airplaneJson = await airplaneResponse.json();
-        console.log(airplaneJson);
 
         for (let i = 0; i < airplaneJson.length; i++){
             const airportResponse = await fetch(api + "/airports/get/" + airplaneJson[i][2]);
@@ -105,7 +96,6 @@ async function drawOwnedAirplanes() {
                 throw new Error(`HTTP Error: ${airportResponse.status}`);
             }
             const airportJson = await airportResponse.json();
-            console.log(airportJson)
             
             var marker = L.marker([airportJson[0][4], airportJson[0][5]], {icon: airplane_icon, rotationAngle: Math.random() * 360.0}).bindPopup(airplaneJson[i][3] + " " + airplaneJson[i][0]).addTo(airplane_markers)
         }
@@ -124,7 +114,6 @@ async function drawOwnedAirports() {
         }
 
         const json = await response.json();
-        console.log(json);
 
         for (i = 0; i < json.length; i++){
             var marker = L.marker([json[i][0][4], json[i][0][5]], {icon: airport_icon}).bindPopup(json[i][0][3]).addTo(airport_markers)
@@ -142,10 +131,6 @@ async function nextTurn() {
         if (!response.ok) {
             throw new Error(`HTTP Error: ${response.status}`);
         } else {
-            map.eachLayer((layer) => {
-            if (layer instanceof L.Marker) {
-                layer.remove();
-            }});
             drawOwnedAirplanes()
             drawOwnedAirports()
             updateCounters()
@@ -185,8 +170,6 @@ async function populateStoreLists() {
         }
         const ownedPlanesJson = await ownedPlanesResponse.json();
         const availablePlanesJson = await availablePlanesResponse.json();
-        console.log(availablePlanesJson);
-        console.log(ownedPlanesJson);
 
         var forSaleList = document.getElementById("airplanes-for-sale");
         var ownedList = document.getElementById("airplanes-owned");
