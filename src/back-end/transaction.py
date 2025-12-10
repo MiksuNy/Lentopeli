@@ -73,7 +73,7 @@ class TransactionManager:
             return False
     
     def get_available_airplanes(self, id):
-        return self.db.query_all(f"SELECT * FROM airplane WHERE game_id = '{id}';")
+        return self.db.query_all(f"SELECT * FROM airplane a WHERE NOT EXISTS (SELECT 1 FROM owns_airplane o WHERE o.airplane_id = a.id AND o.game_id = '{id}') AND game_id = '{id}';")
     
     def get_owned_airplanes(self, id):
         return self.db.query_all(f"SELECT a.* FROM airplane AS a JOIN owns_airplane AS o ON a.id = o.airplane_id WHERE o.game_id = '{id}';")

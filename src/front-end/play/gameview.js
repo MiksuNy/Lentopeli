@@ -99,7 +99,7 @@ async function drawOwnedAirplanes() {
         const airplaneJson = await airplaneResponse.json();
         console.log(airplaneJson);
 
-        for (i = 0; i < airplaneJson.length; i++){
+        for (let i = 0; i < airplaneJson.length; i++){
             const airportResponse = await fetch(api + "/airports/get/" + airplaneJson[i][2]);
             if (!airportResponse.ok) {
                 throw new Error(`HTTP Error: ${airportResponse.status}`);
@@ -199,7 +199,7 @@ async function populateStoreLists() {
             ownedList.removeChild(ownedList.lastChild)
         }
 
-        for (var i = 0; i < availablePlanesJson.length; i++){
+        for (let i = 0; i < availablePlanesJson.length; i++){
             let item = document.createElement("li");
             item.classList.add("airplane-for-sale");
             let content = document.createTextNode(availablePlanesJson[i][0]);
@@ -207,7 +207,7 @@ async function populateStoreLists() {
             forSaleList.appendChild(item);
         }
 
-        for (var i = 0; i < ownedPlanesJson.length; i++) {
+        for (let i = 0; i < ownedPlanesJson.length; i++) {
             let item = document.createElement("li");
             let content = document.createTextNode(ownedPlanesJson[i][0]);
             item.appendChild(content);
@@ -219,6 +219,7 @@ async function populateStoreLists() {
             airplanesForSale[i].addEventListener("click", function (event) {
                 // FIXME: ei pitäis innerTextin perusteella ostaa koneita, mut tarpeeks hyvä nyt
                 buyAirplane(event.target.innerText)
+                
                 populateStoreLists()
             })
         }
